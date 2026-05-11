@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Battle</title>
+  <link rel="stylesheet" href="UI.css">
+</head>
+<body>
+
+<body class="battle-page">
+
+  <div class="enemy-area">
+    <div class="info">
+      <h3>Nisha</h3>
+      <div class="hp-bar"><div id="bossHP"></div></div>
+    </div>
+    <img src="images/boss.png" class="sprite enemy">
+  </div>
+
+  <div class="player-area">
+    <img src="images/player.png" class="sprite player">
+    <div class="info">
+      <h3>You</h3>
+      <div class="hp-bar"><div id="playerHP"></div></div>
+    </div>
+  </div>
+
+  <div class="battle-box">
+    <p id="question"></p>
+
+    <input type="text" id="answerInput" placeholder="Type your answer...">
+    <button type="button" id="submitBtn">Submit</button>
+
+    <div class="timer-bar">
+      <div id="timerFill"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="battlelogic.js"></script>
+</body>
+</html>
