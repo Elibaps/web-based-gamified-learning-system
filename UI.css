@@ -1517,8 +1517,475 @@ body::before {
 }
 
 /* ══════════════════════════════════════════════════════════
-   STORY MODE — Pokémon-style layout
+   STORY MODE — RPG pixel world layout
 ══════════════════════════════════════════════════════════ */
+
+.story-mode-page {
+  background: var(--bg-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Main grid: left world | right code ──────────────────── */
+.story-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  flex: 1;
+  height: calc(100vh - 70px - 160px);
+  min-height: 420px;
+}
+
+/* ══ LEFT — Pixel World Panel ═══════════════════════════════ */
+.world-panel {
+  display: flex;
+  flex-direction: column;
+  border-right: 4px solid var(--primary-color);
+  background: var(--card-bg);
+  overflow: hidden;
+}
+
+.world-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: var(--bg-color);
+  border-bottom: 3px solid var(--primary-color);
+  flex-shrink: 0;
+}
+.world-title { font-size: 10px; letter-spacing: 2px; color: var(--primary-color); }
+.world-stage { font-size: 9px; color: var(--muted-color); letter-spacing: 1px; }
+
+/* The actual RPG scene */
+.world-scene {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  /* Pixel-art grass-ish dark bg with grid */
+  background-color: #0a1a0e;
+  background-image:
+    repeating-linear-gradient(0deg,  transparent, transparent 31px, rgba(74,222,128,0.07) 31px, rgba(74,222,128,0.07) 32px),
+    repeating-linear-gradient(90deg, transparent, transparent 31px, rgba(74,222,128,0.07) 31px, rgba(74,222,128,0.07) 32px);
+  cursor: pointer;
+}
+
+/* Ground tile stripe at bottom */
+.ground-tiles {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(74,222,128,0.12),
+    rgba(74,222,128,0.12) 31px,
+    rgba(74,222,128,0.06) 31px,
+    rgba(74,222,128,0.06) 32px
+  );
+  border-top: 2px solid rgba(74,222,128,0.3);
+}
+
+/* Floating binary bits */
+.ambient-bit {
+  position: absolute;
+  font-size: 11px;
+  color: var(--primary-color);
+  opacity: 0.18;
+  animation: bitFloat 4s ease-in-out infinite;
+  font-family: 'Courier New', monospace;
+  user-select: none;
+  pointer-events: none;
+}
+@keyframes bitFloat {
+  0%, 100% { transform: translateY(0);   opacity: 0.18; }
+  50%       { transform: translateY(-10px); opacity: 0.08; }
+}
+
+/* ── Characters ─────────────────────────────────────────── */
+.world-char {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 5;
+}
+
+.char-sprite {
+  position: relative;
+}
+.char-sprite img {
+  width: 52px;
+  image-rendering: pixelated;
+  display: block;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+}
+
+/* NPC characters */
+.npc-char .char-sprite img {
+  animation: charBob 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(255,68,68,0.4));
+}
+
+/* Player character */
+.player-char {
+  flex-direction: column-reverse; /* label below */
+}
+.player-sprite-wrap img {
+  animation: charBob 2s ease-in-out infinite 0.8s;
+  filter: drop-shadow(0 0 8px rgba(74,222,128,0.5));
+  width: 60px !important;
+}
+
+@keyframes charBob {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+.char-label {
+  font-size: 8px;
+  padding: 1px 6px;
+  letter-spacing: 1px;
+  text-align: center;
+  border-radius: 1px;
+}
+.npc-label {
+  background: rgba(255,68,68,0.2);
+  border: 1px solid #ff4444;
+  color: #ff4444;
+}
+.player-label {
+  background: rgba(74,222,128,0.2);
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+/* Speech bubble above character */
+.char-speech {
+  position: absolute;
+  top: -36px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-color);
+  border: 2px solid var(--primary-color);
+  color: var(--text-color);
+  font-size: 8px;
+  padding: 3px 7px;
+  white-space: nowrap;
+  border-radius: 2px;
+  display: none;
+  z-index: 10;
+}
+.char-speech::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: var(--primary-color);
+}
+
+/* RPG dialogue box that floats in the scene */
+.rpg-dialogue {
+  position: absolute;
+  bottom: 36px;
+  left: 10px;
+  right: 10px;
+  background: var(--bg-color);
+  border: 3px solid var(--primary-color);
+  box-shadow: 4px 4px 0 var(--shadow-color);
+  border-radius: var(--border-radius);
+  z-index: 20;
+  cursor: pointer;
+  animation: dialoguePop 0.2s ease-out;
+}
+@keyframes dialoguePop {
+  from { transform: scaleY(0.7); opacity: 0; }
+  to   { transform: scaleY(1);   opacity: 1; }
+}
+.rpg-dialogue-inner {
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.rpg-speaker {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--primary-color);
+}
+.rpg-speaker.spk-npc    { color: #ff4444; }
+.rpg-speaker.spk-system { color: var(--warning-color); }
+.rpg-text {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-color);
+  min-height: 36px;
+}
+.rpg-next {
+  font-size: 9px;
+  color: var(--muted-color);
+  text-align: right;
+  animation: blinkCursor 0.8s infinite;
+}
+
+/* Walk prompt */
+.walk-prompt {
+  padding: 6px 14px;
+  background: var(--bg-color);
+  border-top: 2px solid rgba(74,222,128,0.3);
+  font-size: 9px;
+  color: var(--muted-color);
+  letter-spacing: 1px;
+  text-align: center;
+  animation: blinkCursor 1.2s infinite;
+  flex-shrink: 0;
+}
+
+/* Action menu 2×2 */
+.world-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 3px solid var(--primary-color);
+  flex-shrink: 0;
+}
+.wa-btn {
+  padding: 12px;
+  background: var(--card-bg);
+  border: none;
+  border-right: 2px solid var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
+  color: var(--text-color);
+  font-family: 'Minecraft', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.wa-btn:hover { background: var(--primary-color); color: var(--bg-color); }
+.wa-btn:nth-child(2), .wa-btn:nth-child(4) { border-right: none; }
+.wa-btn:nth-child(3), .wa-btn:nth-child(4) { border-bottom: none; }
+
+/* ══ RIGHT — Code Panel ══════════════════════════════════════ */
+.code-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-color);
+}
+
+.cp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: var(--card-bg);
+  border-bottom: 3px solid var(--primary-color);
+  flex-shrink: 0;
+}
+.cp-title  { font-size: 10px; letter-spacing: 2px; color: var(--primary-color); }
+.cp-badges { display: flex; align-items: center; gap: 8px; }
+.cp-badge-lang {
+  background: var(--primary-color);
+  color: var(--bg-color);
+  font-size: 9px; padding: 2px 8px;
+  letter-spacing: 1px; border-radius: 2px;
+}
+.cp-badge-stage {
+  font-size: 9px; padding: 2px 8px;
+  border: 2px solid var(--warning-color);
+  color: var(--warning-color); border-radius: 2px;
+}
+.cp-xp {
+  font-size: 10px; color: var(--warning-color);
+  font-weight: bold; letter-spacing: 1px;
+}
+
+/* Objective strip */
+.cp-objective {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(74,222,128,0.05);
+  border-bottom: 2px dashed var(--primary-color);
+  font-size: 11px;
+  line-height: 1.6;
+  flex-shrink: 0;
+}
+.cp-obj-label { color: var(--primary-color); flex-shrink: 0; font-weight: bold; font-size: 10px; }
+.cp-obj-text  { color: var(--text-color); }
+
+/* Editor area */
+.cp-editor-wrap {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  border-bottom: 3px solid var(--primary-color);
+  min-height: 0;
+}
+.cp-gutter {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 8px;
+  background: rgba(0,0,0,0.2);
+  font-size: 10px;
+  color: var(--muted-color);
+  min-width: 34px;
+  text-align: right;
+  user-select: none;
+  line-height: 1.65;
+  gap: 0;
+  overflow-y: hidden;
+}
+.cp-gutter span { display: block; }
+.cp-editor {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--primary-color);
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.65;
+  padding: 10px 12px;
+  resize: none;
+}
+.cp-editor::placeholder { color: var(--muted-color); opacity: 0.4; }
+
+/* Toolbar */
+.cp-toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--card-bg);
+  border-bottom: 3px solid var(--primary-color);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.cp-btn {
+  padding: 7px 16px;
+  background: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  box-shadow: 3px 3px 0 var(--shadow-color);
+  color: var(--bg-color);
+  font-family: 'Minecraft', monospace;
+  font-size: 10px;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  letter-spacing: 1px;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.cp-btn:hover  { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--shadow-color); }
+.cp-btn:active { transform: translate(2px,2px);   box-shadow: 0 0 0 var(--shadow-color); }
+.cp-clear { background: transparent; color: var(--primary-color); }
+.cp-clear:hover { background: var(--primary-color); color: var(--bg-color); }
+.cp-hint  { background: var(--warning-color); border-color: var(--warning-color); color: #000; }
+.cp-hint.hint-shown { font-size: 8px; letter-spacing: 0; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Output console */
+.cp-output {
+  flex-direction: column;
+  padding: 8px 14px;
+  background: rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+.cp-out-label { font-size: 8px; letter-spacing: 2px; color: var(--muted-color); margin-bottom: 3px; }
+.cp-out-content {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-color);
+  padding: 7px 10px;
+  border: 2px solid var(--muted-color);
+  border-radius: var(--border-radius);
+}
+.cp-out-ok  { border-color: var(--primary-color); color: var(--primary-color); background: rgba(74,222,128,0.07); }
+.cp-out-err { border-color: var(--danger-color);  color: var(--danger-color);  background: rgba(255,0,0,0.07); }
+
+/* ══ BOTTOM — Story Bar ══════════════════════════════════════ */
+.story-bar {
+  border-top: 4px solid var(--primary-color);
+  background: var(--card-bg);
+  flex-shrink: 0;
+}
+.story-bar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 18px;
+  border-bottom: 2px solid rgba(74,222,128,0.3);
+}
+.sb-label   { font-size: 9px; letter-spacing: 2px; color: var(--primary-color); }
+.sb-chapter { font-size: 9px; color: var(--muted-color); letter-spacing: 1px; margin-left: 8px; }
+.sb-toggle  {
+  margin-left: auto;
+  background: none;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  font-size: 9px;
+  cursor: pointer;
+  padding: 1px 7px;
+  border-radius: 2px;
+  font-family: 'Minecraft', monospace;
+}
+.story-bar-body {
+  display: flex;
+  gap: 0;
+  padding: 10px 18px;
+  max-height: 120px;
+  overflow-y: auto;
+  flex-direction: column;
+  gap: 6px;
+}
+.story-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--text-color);
+  padding: 5px 10px;
+  border-radius: var(--border-radius);
+  transition: opacity 0.4s;
+}
+.active-story {
+  background: rgba(74,222,128,0.07);
+  border: 2px solid var(--primary-color);
+}
+.se-dot { flex-shrink: 0; font-size: 10px; margin-top: 2px; }
+
+/* ══ Victory Overlay ════════════════════════════════════════ */
+.v-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(6px);
+}
+.v-card {
+  background: var(--card-bg);
+  border: 4px solid var(--primary-color);
+  box-shadow: 12px 12px 0 var(--shadow-color);
+  border-radius: var(--border-radius);
+  padding: 44px 38px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  animation: overlayPop 0.35s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+.v-icon { font-size: 4rem; margin-bottom: 14px; animation: charBob 2s infinite; }
+.v-card h2 { font-size: 1.8rem; margin: 0 0 8px; letter-spacing: 3px; color: var(--primary-color); }
+.v-card p  { color: var(--text-color); margin: 0 0 12px; line-height: 1.6; }
+.v-xp { font-size: 1.3rem; color: var(--warning-color); font-weight: bold; letter-spacing: 2px; margin-bottom: 22px; }
+.v-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
 
 .story-mode-page {
   background: var(--bg-color);
