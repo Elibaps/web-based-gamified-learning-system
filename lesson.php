@@ -1,239 +1,114 @@
 <?php
 session_start();
+include 'db.php';
 
-if(!isset($_SESSION['username'])){
-    header("Location: login.html");
+if (!isset($_SESSION['username'])) {
+    header('Location: login.php');
     exit();
 }
 
-$course = $_GET['course'];
-$lesson = isset($_GET['lesson'])
-? $_GET['lesson']
-: 'intro';
+$username = $_SESSION['username'];
+
+// ── Whitelist allowed courses ─────────────────────────────────────────────
+$allowed_courses = ['HTML', 'CSS', 'JavaScript', 'PHP', 'Java', 'C++'];
+$course = (isset($_GET['course']) && in_array($_GET['course'], $allowed_courses, true))
+    ? $_GET['course']
+    : 'HTML';
+
+// ── Whitelist allowed lesson slugs ────────────────────────────────────────
+$allowed_slugs = ['intro', 'basics', 'syntax', 'practice', 'quiz'];
+$lesson_slug = (isset($_GET['lesson']) && in_array($_GET['lesson'], $allowed_slugs, true))
+    ? $_GET['lesson']
+    : 'intro';
+
+// ── Fetch user_id for progress tracking ──────────────────────────────────
+$user_id = $_SESSION['user_id'] ?? null;
+if (!$user_id) {
+    $stmt = $conn->prepare("SELECT user_id FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $urow = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    $user_id = $urow['user_id'] ?? null;
+    if ($user_id) {
+        $_SESSION['user_id'] = $user_id;
+    }
+}
+
+// ── Fetch lesson content from DB ──────────────────────────────────────────
+$stmt = $conn->prepare(
+    "SELECT title, content FROM lessons WHERE course = ? AND slug = ?"
+);
+$stmt->bind_param("ss", $course, $lesson_slug);
+$stmt->execute();
+$lesson = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+
+// ── Fetch sidebar items for this course ───────────────────────────────────
+$stmt = $conn->prepare(
+    "SELECT slug, title FROM lessons WHERE course = ? ORDER BY sort_order ASC"
+);
+$stmt->bind_param("s", $course);
+$stmt->execute();
+$sidebarLessons = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+
+// ── Mark lesson as completed (skip practice/quiz — action-based only) ─────
+if ($user_id && !in_array($lesson_slug, ['practice', 'quiz'], true)) {
+    $stmt = $conn->prepare(
+        "INSERT IGNORE INTO user_progress (user_id, course, lesson_slug)
+         VALUES (?, ?, ?)"
+    );
+    $stmt->bind_param("iss", $user_id, $course, $lesson_slug);
+    $stmt->execute();
+    $stmt->close();
+}
+
+$safeCourse = htmlspecialchars($course, ENT_QUOTES, 'UTF-8');
+$pageTitle  = $safeCourse . ' Lessons — CodeNest';
+include 'includes/head.php';
 ?>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title><?php echo $course; ?> Lessons</title>
-    <link rel="stylesheet" href="UI.css">
-</head>
-
 <body class="dashboard-page">
 
-<div class="navbar">
-
-  <div class="nav-left">
-    <span class="logo-text">🪙 CodeNest</span>
-  </div>
-
-  <div class="nav-right">
-    <a href="dashboard.php" class="logout-btn">
-      ← Back
-    </a>
-  </div>
-
-</div>
+<?php include 'includes/navbar_simple.php'; ?>
 
 <div class="lesson-page">
 
-<div class="lesson-sidebar">
+  <!-- SIDEBAR -->
+  <div class="lesson-sidebar">
+    <h2><?php echo $safeCourse; ?></h2>
 
-    <h2><?php echo $course; ?></h2>
+    <?php foreach ($sidebarLessons as $item):
+        $isActive = ($item['slug'] === $lesson_slug) ? 'active' : '';
+        $href = 'lesson.php?course=' . urlencode($course) . '&lesson=' . urlencode($item['slug']);
+    ?>
+      <a href="<?php echo $href; ?>" class="lesson-item <?php echo $isActive; ?>">
+        <?php echo htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8'); ?>
+      </a>
+    <?php endforeach; ?>
+  </div>
 
-    <a
-    href="lesson.php?course=<?php echo $course; ?>&lesson=intro"
-    class="lesson-item active">
-
-    Introduction
-
-    </a>
-
-    <a
-    href="lesson.php?course=<?php echo $course; ?>&lesson=basics"
-    class="lesson-item">
-
-    Basics
-
-    </a>
-
-    <a
-    href="lesson.php?course=<?php echo $course; ?>&lesson=syntax"
-    class="lesson-item">
-
-    Tags & Syntax
-
-    </a>
-
-    <a
-    href="lesson.php?course=<?php echo $course; ?>&lesson=practice"
-    class="lesson-item">
-
-    Practice
-
-    </a>
-
-    <a
-    href="lesson.php?course=<?php echo $course; ?>&lesson=quiz"
-    class="lesson-item">
-
-    Quiz
-
-    </a>
-
-</div>
-
+  <!-- LESSON CONTENT -->
   <div class="lesson-content">
+    <?php if ($lesson): ?>
+      <?php
+      // Lesson HTML is authored/seeded content (trusted), not user input.
+      // Safe to output as raw HTML — never echoed from user-submitted data.
+      echo $lesson['content'];
+      ?>
 
-<?php
+      <?php if ($lesson_slug === 'practice'): ?>
+        <button onclick="startBattle('<?php echo $safeCourse; ?>')">⚔️ Start Practice Battle</button>
+      <?php elseif ($lesson_slug === 'quiz'): ?>
+        <button onclick="startQuiz('<?php echo $safeCourse; ?>')">📝 Start Quiz</button>
+      <?php endif; ?>
 
-if($course == "HTML"){
-
-  if($lesson == "intro"){
-
-    echo "
-    <h1>Introduction to HTML</h1>
-
-    <p>
-    HTML is the structure of every website.
-    </p>
-    ";
-
-  }
-
-  if($lesson == "basics"){
-
-    echo "
-    <h1>HTML Basics</h1>
-
-    <div class='code-block'>
-    &lt;h1&gt;Hello&lt;/h1&gt;
-    </div>
-    ";
-
-  }
-
-  if($lesson == "syntax"){
-
-    echo "
-    <h1>HTML Tags</h1>
-
-    <ul>
-      <li>&lt;p&gt;</li>
-      <li>&lt;img&gt;</li>
-      <li>&lt;a&gt;</li>
-    </ul>
-    ";
-
-  }
-
-  if($lesson == "practice"){
-
-    echo "
-    <h1>Practice</h1>
-
-    <p>Create your first webpage.</p>
-
-    <button onclick=\"startBattle('HTML')\">
-      Start Practice Battle
-    </button>
-    ";
-
-  }
-
-  if($lesson == "quiz"){
-
-    echo "
-    <h1>HTML Quiz</h1>
-
-    <button onclick=\"startQuiz('HTML')\">
-      Start Quiz
-    </button>
-    ";
-
-  }
-
-}
-if($course == "CSS"){
-
-    echo "
-    <h1>CSS Basics</h1>
-
-    <p>
-      CSS is used for styling websites.
-    </p>
-
-    <h2>Example CSS</h2>
-
-    <div class='code-block'>
-body {<br>
-&nbsp;&nbsp;background: black;<br>
-&nbsp;&nbsp;color: white;<br>
-}
-    </div>
-
-    <h2>What CSS Can Do</h2>
-
-    <ul>
-      <li>Colors</li>
-      <li>Layouts</li>
-      <li>Animations</li>
-      <li>Responsive Design</li>
-    </ul>
-
-    <button onclick=\"startQuiz('CSS')\">
-      Take Quiz
-    </button>
-    ";
-}
-
-if($course == "JavaScript"){
-
-    echo "
-    <h1>JavaScript Basics</h1>
-
-    <p>
-      JavaScript adds interactivity to websites.
-    </p>
-
-    <h2>Example JavaScript</h2>
-
-    <div class='code-block'>
-alert('Hello World');
-    </div>
-
-    <h2>JavaScript Features</h2>
-
-    <ul>
-      <li>Buttons</li>
-      <li>Games</li>
-      <li>Animations</li>
-      <li>Logic Systems</li>
-    </ul>
-
-    <button onclick=\"startQuiz('JavaScript')\">
-      Take Quiz
-    </button>
-    ";
-}
-
-?>
-
+    <?php else: ?>
+      <h1>Lesson Not Found</h1>
+      <p>This lesson is not available yet. Check back soon!</p>
+    <?php endif; ?>
   </div>
 
 </div>
 
-<script>
-function startQuiz(language){
-
-  localStorage.setItem(
-    "quizLanguage",
-    language
-  );
-
-  window.location.href = "quiz.php";
-}
-</script>
-
-</body>
-</html>
+<?php include 'includes/footer.php'; ?>
