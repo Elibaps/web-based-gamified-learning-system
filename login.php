@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="./UI.css?v=1">
 </head>
 
-<body>
+<body class="auth-page">
 
 <div class="auth-container">
   <!-- LOGO -->

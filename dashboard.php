@@ -142,14 +142,6 @@ $percent = ($exp / $expNeeded) * 100;
         <button class="pvp-btn">
           ⚔️ PvP (Soon)
         </button>
-
-        <a href="logout.php"
-        class="logout-btn">
-
-          Logout
-
-        </a>
-
     </div>
 
 </div>

@@ -20,10 +20,6 @@ body {
   image-rendering: pixelated;
   color: white;
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
   min-height: 100vh;
 }
 
@@ -54,6 +50,11 @@ body {
 
   text-align: center;
   justify-content: center;
+}
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* FADE IN */
@@ -285,17 +286,26 @@ body {
 .battle-container {
   width: 800px;
   margin: 40px auto;
+  padding: 40px;
+
+  min-height: calc(100vh - 70px);
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
 }
 
 .enemy-area, .player-area {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 20px 0;
+  margin: 40px 0;
 }
 
 .sprite {
   width: 120px;
+  image-rendering: pixelated;
 }
 
 .hp-bar {
@@ -314,6 +324,8 @@ body {
 .battle-box {
   border: 2px solid white;
   padding: 20px;
+  background: #0f172a;
+  width: 320px;
 }
 
 .timer-bar {
