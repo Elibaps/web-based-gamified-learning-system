@@ -1646,21 +1646,24 @@ body::before {
 }
 
 .char-label {
-  font-size: 8px;
-  padding: 1px 6px;
+  font-size: 10px;
+  padding: 2px 7px;
   letter-spacing: 1px;
   text-align: center;
   border-radius: 1px;
+  font-weight: bold;
 }
 .npc-label {
-  background: rgba(255,68,68,0.2);
-  border: 1px solid #ff4444;
-  color: #ff4444;
+  background: rgba(255,68,68,0.3);
+  border: 2px solid #ff6666;
+  color: #ff9999;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 .player-label {
-  background: rgba(74,222,128,0.2);
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
+  background: rgba(74,222,128,0.3);
+  border: 2px solid #4ade80;
+  color: #86efac;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 
 /* Speech bubble above character */
@@ -1695,9 +1698,10 @@ body::before {
   bottom: 36px;
   left: 10px;
   right: 10px;
-  background: var(--bg-color);
-  border: 3px solid var(--primary-color);
-  box-shadow: 4px 4px 0 var(--shadow-color);
+  /* Always dark so text is readable on the dark world scene */
+  background: #0d1f10;
+  border: 3px solid #4ade80;
+  box-shadow: 4px 4px 0 #0f5127, 0 0 20px rgba(74,222,128,0.15);
   border-radius: var(--border-radius);
   z-index: 20;
   cursor: pointer;
@@ -1714,32 +1718,33 @@ body::before {
   gap: 4px;
 }
 .rpg-speaker {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 2px;
-  color: var(--primary-color);
+  color: #4ade80;
+  font-weight: bold;
 }
-.rpg-speaker.spk-npc    { color: #ff4444; }
-.rpg-speaker.spk-system { color: var(--warning-color); }
+.rpg-speaker.spk-npc    { color: #ff6666; }
+.rpg-speaker.spk-system { color: #fbbf24; }
 .rpg-text {
-  font-size: 12px;
-  line-height: 1.6;
-  color: var(--text-color);
-  min-height: 36px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #f1f5f9;
+  min-height: 40px;
 }
 .rpg-next {
-  font-size: 9px;
-  color: var(--muted-color);
+  font-size: 10px;
+  color: #94a3b8;
   text-align: right;
   animation: blinkCursor 0.8s infinite;
 }
 
 /* Walk prompt */
 .walk-prompt {
-  padding: 6px 14px;
-  background: var(--bg-color);
-  border-top: 2px solid rgba(74,222,128,0.3);
-  font-size: 9px;
-  color: var(--muted-color);
+  padding: 7px 14px;
+  background: #0d1f10;
+  border-top: 2px solid rgba(74,222,128,0.4);
+  font-size: 11px;
+  color: #86efac;
   letter-spacing: 1px;
   text-align: center;
   animation: blinkCursor 1.2s infinite;
@@ -1754,19 +1759,20 @@ body::before {
   flex-shrink: 0;
 }
 .wa-btn {
-  padding: 12px;
-  background: var(--card-bg);
+  padding: 13px;
+  background: #0d1f10;
   border: none;
   border-right: 2px solid var(--primary-color);
   border-bottom: 2px solid var(--primary-color);
-  color: var(--text-color);
+  color: #d1fae5;
   font-family: 'Minecraft', monospace;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 1px;
   cursor: pointer;
   transition: background 0.12s, color 0.12s;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
 }
-.wa-btn:hover { background: var(--primary-color); color: var(--bg-color); }
+.wa-btn:hover { background: var(--primary-color); color: #000; }
 .wa-btn:nth-child(2), .wa-btn:nth-child(4) { border-right: none; }
 .wa-btn:nth-child(3), .wa-btn:nth-child(4) { border-bottom: none; }
 
