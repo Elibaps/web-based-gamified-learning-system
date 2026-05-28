@@ -3,7 +3,7 @@ $host = "localhost";
 $user = "root";
 $pass = "";
 $db   = "codenest";
-$port = 3307;
+$port = 3306;
 
 $conn = mysqli_connect($host, $user, $pass, $db, $port);
 
