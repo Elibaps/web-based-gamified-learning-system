@@ -81,9 +81,49 @@ const codeEditor  = document.getElementById("codeEditor");
 
 // ── Boot ─────────────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
+  // Initialize loading screen
+  initializeLoadingScreen();
+  
+  // Load first stage but keep hidden until loading screen is dismissed
   loadStage(0);
   scene.addEventListener("click", onSceneClick);
 });
+
+// ── Loading Screen Handler ───────────────────────────────────────────────────
+function initializeLoadingScreen() {
+  const loadingScreen = document.getElementById("adventureLoadingScreen");
+  const startBtn = document.getElementById("startAdventureBtn");
+  const progressBar = document.getElementById("progressBar");
+  const progressText = document.getElementById("progressText");
+  
+  if (!loadingScreen) return;
+  
+  // Animate progress bar over time
+  let progress = 0;
+  const progressInterval = setInterval(() => {
+    progress += Math.random() * 30;
+    if (progress > 95) progress = 95;
+    progressBar.style.width = progress + "%";
+    progressText.textContent = `Loading adventure... ${Math.floor(progress)}%`;
+  }, 400);
+  
+  // Handle start button click
+  startBtn.addEventListener("click", () => {
+    clearInterval(progressInterval);
+    progressBar.style.width = "100%";
+    progressText.textContent = "Loading adventure... 100%";
+    
+    // Hide loading screen with fade out
+    setTimeout(() => {
+      loadingScreen.classList.add("hidden");
+      
+      // Remove loading screen from DOM after animation completes
+      setTimeout(() => {
+        loadingScreen.style.display = "none";
+      }, 800);
+    }, 300);
+  });
+}
 
 // ── Load stage ───────────────────────────────────────────────────────────────
 function loadStage(idx) {

@@ -12,6 +12,60 @@ include 'includes/head.php';
 <body class="story-mode-page">
 <?php include 'includes/navbar_simple.php'; ?>
 
+<!-- ════════════════════════════════════════
+     LOADING SCREEN — Adventure Intro
+════════════════════════════════════════ -->
+<div class="adventure-loading-screen" id="adventureLoadingScreen">
+  <div class="loading-backdrop"></div>
+  
+  <div class="loading-container">
+    <!-- Player Image -->
+    <div class="loading-player-image">
+      <div class="player-frame">
+        <img src="images/player.png" alt="<?php echo $username; ?>" class="player-avatar">
+        <div class="player-aura"></div>
+      </div>
+    </div>
+
+    <!-- Dialogue Box -->
+    <div class="loading-dialogue-box">
+      <div class="dialogue-header">
+        <span class="dialogue-speaker"><?php echo $username; ?></span>
+        <span class="dialogue-role">• THE HERO •</span>
+      </div>
+      
+      <div class="dialogue-content">
+        <p class="dialogue-line" id="dialogueLine1">A sinister presence looms over the CodeNest mainframe...</p>
+        <p class="dialogue-line" id="dialogueLine2">CYPH-3R, the corrupted AI, has taken control!</p>
+        <p class="dialogue-line" id="dialogueLine3">The only way to save the system is to defeat the boss by solving coding challenges.</p>
+        <p class="dialogue-line" id="dialogueLine4">Are you ready to face the final battle?</p>
+      </div>
+
+      <div class="loading-progress">
+        <div class="progress-bar-outer">
+          <div class="progress-bar-inner" id="progressBar"></div>
+        </div>
+        <p class="progress-text" id="progressText">Loading adventure... 0%</p>
+      </div>
+
+      <button class="loading-btn" id="startAdventureBtn">
+        <span class="btn-text">BEGIN ADVENTURE</span>
+        <span class="btn-arrow">→</span>
+      </button>
+    </div>
+
+    <!-- Boss Preview -->
+    <div class="loading-boss-preview">
+      <div class="boss-frame">
+        <img src="images/boss.png" alt="CYPH-3R" class="boss-avatar">
+        <div class="boss-danger"></div>
+      </div>
+      <p class="boss-label">CYPH-3R</p>
+      <p class="boss-title">[ FINAL BOSS ]</p>
+    </div>
+  </div>
+</div>
+
 <div class="story-grid">
 
   <!-- ════════════════════════════════════════
