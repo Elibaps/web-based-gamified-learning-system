@@ -227,7 +227,7 @@ function doAction(action) {
   worldActions.style.display = "none";
 
   if (action === "code") {
-    flashCodePanel();
+    showTerminalOverlay();
     queueMsg("CYPH-3R", "spk-npc", "So you choose to fight with code? I look forward to your failure...");
   } else if (action === "study") {
     document.getElementById("cpObjective").classList.add("obj-pulse");
@@ -258,17 +258,33 @@ function flashCodePanel() {
 
 // ── Run code ───────────────────────────────────────────────────────────────────
 function runCode() {
-  const s      = STAGES[stageIdx];
-  const raw    = codeEditor.value.trim();
-  const given  = raw.toLowerCase().replace(/\s+/g, "");
+  const s = STAGES[stageIdx];
+  
+  // Get code from whichever editor is currently active
+  const terminalEditor = document.getElementById("terminalEditor");
+  const terminalOverlay = document.getElementById("terminalOverlay");
+  const activeEditor = (terminalOverlay.style.display !== "none") ? terminalEditor : codeEditor;
+  
+  const raw = activeEditor.value.trim();
+  const given = raw.toLowerCase().replace(/\s+/g, "");
   const expect = s.answer.toLowerCase().replace(/\s+/g, "");
-
-  cpOutput.style.display = "flex";
-  cpOutContent.classList.remove("cp-out-ok", "cp-out-err");
+  
+  // Show output in appropriate location
+  if (terminalOverlay.style.display !== "none") {
+    updateTerminalOutput("", false);
+  } else {
+    cpOutput.style.display = "flex";
+    cpOutContent.classList.remove("cp-out-ok", "cp-out-err");
+  }
 
   if (given === expect) {
-    cpOutContent.textContent = "✔ Compiled! Output: " + raw;
-    cpOutContent.classList.add("cp-out-ok");
+    const outputText = "✔ Compiled! Output: " + raw;
+    if (terminalOverlay.style.display !== "none") {
+      updateTerminalOutput(outputText, false);
+    } else {
+      cpOutContent.textContent = outputText;
+      cpOutContent.classList.add("cp-out-ok");
+    }
 
     totalXP += s.xp;
     xpCounter.textContent = totalXP;
@@ -291,8 +307,13 @@ function runCode() {
     }, 500);
 
   } else {
-    cpOutContent.textContent = "✘ Error. Expected: " + s.answer;
-    cpOutContent.classList.add("cp-out-err");
+    const outputText = "✘ Error. Expected: " + s.answer;
+    if (terminalOverlay.style.display !== "none") {
+      updateTerminalOutput(outputText, true);
+    } else {
+      cpOutContent.textContent = outputText;
+      cpOutContent.classList.add("cp-out-err");
+    }
 
     const player = document.getElementById("playerChar");
     player.classList.add("char-shake");
@@ -309,21 +330,51 @@ function runCode() {
 // ── Show hint ──────────────────────────────────────────────────────────────────
 function showHint() {
   const btn = document.getElementById("hintBtn");
-  btn.textContent = "💡 " + STAGES[stageIdx].hint;
-  btn.classList.add("hint-shown");
+  const terminalBtn = document.getElementById("terminalHintBtn");
+  const hintText = "💡 " + STAGES[stageIdx].hint;
+  
+  if (btn) {
+    btn.textContent = hintText;
+    btn.classList.add("hint-shown");
+  }
+  if (terminalBtn) {
+    terminalBtn.textContent = hintText;
+    terminalBtn.classList.add("hint-shown");
+  }
 }
 
 function resetHintBtn() {
   const btn = document.getElementById("hintBtn");
-  btn.textContent = "💡 HINT";
-  btn.classList.remove("hint-shown");
+  const terminalBtn = document.getElementById("terminalHintBtn");
+  
+  if (btn) {
+    btn.textContent = "💡 HINT";
+    btn.classList.remove("hint-shown");
+  }
+  if (terminalBtn) {
+    terminalBtn.textContent = "💡 HINT";
+    terminalBtn.classList.remove("hint-shown");
+  }
 }
 
 // ── Clear ──────────────────────────────────────────────────────────────────────
 function clearCode() {
+  const terminalEditor = document.getElementById("terminalEditor");
+  const terminalOverlay = document.getElementById("terminalOverlay");
+  
+  if (terminalOverlay.style.display !== "none") {
+    terminalEditor.value = "";
+    hideTerminalOutput();
+    terminalEditor.focus();
+  } else {
+    codeEditor.value = "";
+    hideOutput();
+    codeEditor.focus();
+  }
+  
+  // Also clear the other editor
   codeEditor.value = "";
-  hideOutput();
-  codeEditor.focus();
+  terminalEditor.value = "";
 }
 
 function hideOutput() {
@@ -358,6 +409,129 @@ function nextStage() {
     loadStage(stageIdx + 1);
   }
 }
+
+// ── Terminal Overlay Functions ──────────────────────────────────────────────────
+/**
+ * Show the battle terminal overlay (50% screen height at bottom)
+ */
+function showTerminalOverlay() {
+  const terminalOverlay = document.getElementById("terminalOverlay");
+  const storyGrid = document.getElementById("storyGrid");
+  const terminalEditor = document.getElementById("terminalEditor");
+  
+  // Show overlay and adjust grid layout
+  terminalOverlay.style.display = "flex";
+  terminalOverlay.classList.remove("hidden");
+  storyGrid.classList.add("full-width");
+  
+  // Sync the current code to terminal editor
+  terminalEditor.value = codeEditor.value;
+  
+  // Focus on terminal editor and make draggable
+  terminalEditor.focus();
+  makeDraggable(document.getElementById("terminalDragHandle"), terminalOverlay);
+}
+
+/**
+ * Close the battle terminal overlay
+ */
+function closeTerminalOverlay() {
+  const terminalOverlay = document.getElementById("terminalOverlay");
+  const storyGrid = document.getElementById("storyGrid");
+  
+  // Hide overlay and restore grid layout
+  terminalOverlay.classList.add("hidden");
+  setTimeout(() => {
+    terminalOverlay.style.display = "none";
+    storyGrid.classList.remove("full-width");
+  }, 150);
+}
+
+/**
+ * Sync code between main editor and terminal editor
+ */
+function syncTerminalCode() {
+  const terminalEditor = document.getElementById("terminalEditor");
+  const mainEditor = document.getElementById("codeEditor");
+  
+  // Mirror code changes both ways
+  if (document.activeElement === terminalEditor) {
+    mainEditor.value = terminalEditor.value;
+  } else if (document.activeElement === mainEditor) {
+    terminalEditor.value = mainEditor.value;
+  }
+}
+
+/**
+ * Make element draggable by its handle
+ */
+function makeDraggable(handle, element) {
+  let offsetX = 0;
+  let offsetY = 0;
+  let isDown = false;
+  let currentY = 0;
+  
+  handle.addEventListener("mousedown", (e) => {
+    isDown = true;
+    offsetY = e.clientY - element.getBoundingClientRect().top;
+  });
+  
+  document.addEventListener("mousemove", (e) => {
+    if (!isDown) return;
+    
+    const viewportHeight = window.innerHeight;
+    const maxY = viewportHeight - (viewportHeight * 0.3); // Don't move above 30% from top
+    const minY = viewportHeight * 0.2; // Don't move below 20% from top
+    
+    currentY = Math.max(minY, Math.min(maxY, e.clientY - offsetY));
+    element.style.bottom = "auto";
+    element.style.top = currentY + "px";
+  });
+  
+  document.addEventListener("mouseup", () => {
+    isDown = false;
+  });
+}
+
+/**
+ * Update terminal output display
+ */
+function updateTerminalOutput(content, isError) {
+  const terminalOutput = document.getElementById("terminalOutput");
+  const terminalOutContent = document.getElementById("terminalOutContent");
+  
+  terminalOutput.style.display = "flex";
+  terminalOutContent.textContent = content;
+  
+  if (isError) {
+    terminalOutContent.classList.add("err");
+    terminalOutContent.classList.remove("ok");
+  } else {
+    terminalOutContent.classList.add("ok");
+    terminalOutContent.classList.remove("err");
+  }
+}
+
+/**
+ * Hide terminal output
+ */
+function hideTerminalOutput() {
+  const terminalOutput = document.getElementById("terminalOutput");
+  terminalOutput.style.display = "none";
+}
+
+// Add event listeners for code editor synchronization
+document.addEventListener("DOMContentLoaded", () => {
+  const codeEditorElem = document.getElementById("codeEditor");
+  const terminalEditorElem = document.getElementById("terminalEditor");
+  
+  if (codeEditorElem) {
+    codeEditorElem.addEventListener("input", syncTerminalCode);
+  }
+  if (terminalEditorElem) {
+    terminalEditorElem.addEventListener("input", syncTerminalCode);
+  }
+});
 
 // ── Story bar toggle ───────────────────────────────────────────────────────────
 function toggleStoryBar() {

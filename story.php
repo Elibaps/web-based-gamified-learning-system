@@ -66,7 +66,7 @@ include 'includes/head.php';
   </div>
 </div>
 
-<div class="story-grid">
+<div class="story-grid" id="storyGrid">
 
   <!-- ════════════════════════════════════════
        TOP-LEFT: Pixel World Scene
@@ -144,9 +144,9 @@ include 'includes/head.php';
   </div><!-- /.world-panel -->
 
   <!-- ════════════════════════════════════════
-       TOP-RIGHT: Code Editor
+       TOP-RIGHT: Code Editor (Hidden by default)
   ════════════════════════════════════════ -->
-  <div class="code-panel">
+  <div class="code-panel code-panel-hidden">
 
     <div class="cp-header">
       <span class="cp-title">💻 TERMINAL</span>
@@ -187,6 +187,45 @@ include 'includes/head.php';
     </div>
 
   </div><!-- /.code-panel -->
+
+  <!-- ════════════════════════════════════════
+       BATTLE TERMINAL OVERLAY (Fixed bottom)
+  ════════════════════════════════════════ -->
+  <div class="terminal-battle-overlay" id="terminalOverlay" style="display:none;">
+    <!-- Draggable header with close button -->
+    <div class="terminal-header" id="terminalDragHandle">
+      <span class="terminal-title">⚔️ BATTLE TERMINAL</span>
+      <button class="terminal-close-btn" onclick="closeTerminalOverlay()">✕</button>
+    </div>
+    
+    <!-- Terminal content (mirrors code-panel) -->
+    <div class="terminal-content">
+      <div class="terminal-objective" id="terminalObjective">
+        <span class="terminal-obj-label">▶ OBJECTIVE</span>
+        <span class="terminal-obj-text" id="terminalObjText">Awaiting mission briefing...</span>
+      </div>
+
+      <div class="terminal-editor-wrap">
+        <div class="terminal-gutter" id="terminalGutter">
+          <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+          <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+        </div>
+        <textarea id="terminalEditor" class="terminal-editor" spellcheck="false"
+                  placeholder="// Write your code here..."></textarea>
+      </div>
+
+      <div class="terminal-toolbar">
+        <button class="terminal-btn terminal-run"   onclick="runCode()">▶ RUN</button>
+        <button class="terminal-btn terminal-clear" onclick="clearCode()">⌫ CLEAR</button>
+        <button class="terminal-btn terminal-hint"  id="terminalHintBtn" onclick="showHint()">💡 HINT</button>
+      </div>
+
+      <div class="terminal-output" id="terminalOutput" style="display:none;">
+        <div class="terminal-out-label">OUTPUT</div>
+        <div class="terminal-out-content" id="terminalOutContent"></div>
+      </div>
+    </div>
+  </div><!-- /.terminal-battle-overlay -->
 
 </div><!-- /.story-grid -->
 

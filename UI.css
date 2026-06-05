@@ -2494,6 +2494,279 @@ body::before {
   animation: backdropShimmer 4s ease-in-out infinite;
 }
 
+/* ══════════════════════════════════════════════════════════════
+   BATTLE TERMINAL OVERLAY SYSTEM
+═════════════════════════════════════════════════════════════ */
+
+/* Hide code-panel initially */
+.code-panel-hidden {
+  display: none !important;
+}
+
+/* Story grid with full width when code-panel is hidden */
+.story-grid.full-width {
+  grid-template-columns: 1fr;
+}
+.story-grid.full-width .world-panel {
+  border-right: none;
+}
+
+/* Terminal battle overlay - fixed bottom overlay at 50% height */
+.terminal-battle-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50vh;
+  background: var(--bg-color);
+  border-top: 4px solid var(--primary-color);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  touch-action: none;
+}
+
+.terminal-battle-overlay.hidden {
+  display: none !important;
+}
+
+/* Draggable header */
+.terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--card-bg);
+  border-bottom: 3px solid var(--primary-color);
+  cursor: move;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.terminal-title {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.terminal-close-btn {
+  background: none;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  font-size: 12px;
+  padding: 2px 8px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.15s;
+  font-family: 'Minecraft', monospace;
+}
+
+.terminal-close-btn:hover {
+  background: var(--primary-color);
+  color: var(--bg-color);
+}
+
+.terminal-close-btn:active {
+  transform: scale(0.95);
+}
+
+/* Terminal content area */
+.terminal-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.terminal-objective {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(74, 222, 128, 0.05);
+  border-bottom: 2px dashed var(--primary-color);
+  font-size: 10px;
+  line-height: 1.5;
+  flex-shrink: 0;
+}
+
+.terminal-obj-label {
+  color: var(--primary-color);
+  flex-shrink: 0;
+  font-weight: bold;
+  font-size: 10px;
+}
+
+.terminal-obj-text {
+  color: var(--text-color);
+}
+
+/* Terminal editor area */
+.terminal-editor-wrap {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.terminal-gutter {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 8px;
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 10px;
+  color: var(--muted-color);
+  min-width: 34px;
+  text-align: right;
+  user-select: none;
+  line-height: 1.65;
+  gap: 0;
+  overflow-y: hidden;
+}
+
+.terminal-gutter span {
+  display: block;
+}
+
+.terminal-editor {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--primary-color);
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.65;
+  padding: 10px 12px;
+  resize: none;
+}
+
+.terminal-editor::placeholder {
+  color: var(--muted-color);
+  opacity: 0.4;
+}
+
+/* Terminal toolbar */
+.terminal-toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--card-bg);
+  border-top: 2px solid var(--primary-color);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.terminal-btn {
+  padding: 6px 14px;
+  background: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  box-shadow: 2px 2px 0 var(--shadow-color);
+  color: var(--bg-color);
+  font-family: 'Minecraft', monospace;
+  font-size: 9px;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  letter-spacing: 1px;
+  transition: transform 0.1s, box-shadow 0.1s;
+  font-weight: bold;
+}
+
+.terminal-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--shadow-color);
+}
+
+.terminal-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 0 0 0 var(--shadow-color);
+}
+
+.terminal-clear {
+  background: transparent;
+  color: var(--primary-color);
+}
+
+.terminal-clear:hover {
+  background: var(--primary-color);
+  color: var(--bg-color);
+}
+
+.terminal-hint {
+  background: var(--warning-color);
+  border-color: var(--warning-color);
+  color: #000;
+}
+
+/* Terminal output */
+.terminal-output {
+  flex-direction: column;
+  padding: 8px 14px;
+  background: rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.terminal-out-label {
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--muted-color);
+  margin-bottom: 3px;
+}
+
+.terminal-out-content {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--text-color);
+  padding: 6px 10px;
+  border: 2px solid var(--muted-color);
+  border-radius: var(--border-radius);
+  max-height: 80px;
+  overflow-y: auto;
+}
+
+.terminal-out-content.ok {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background: rgba(74, 222, 128, 0.07);
+}
+
+.terminal-out-content.err {
+  border-color: var(--danger-color);
+  color: var(--danger-color);
+  background: rgba(255, 0, 0, 0.07);
+}
+
+/* Animations */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .terminal-battle-overlay {
+    height: 60vh;
+  }
+
+  .story-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .world-panel {
+    border-right: none !important;
+  }
+}
+
 @keyframes backdropShimmer {
   0%, 100% { opacity: 0.3; }
   50% { opacity: 0.6; }
