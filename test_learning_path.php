@@ -1,12 +1,6 @@
 <?php
-// Learning Path System Integration Test
-// This script tests all components of the learning path system
-
 header('Content-Type: text/html; charset=utf-8');
-
 include 'db.php';
-
-// Simple HTML response
 ?>
 <!DOCTYPE html>
 <html lang="en">
