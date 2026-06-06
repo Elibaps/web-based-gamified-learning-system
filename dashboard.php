@@ -103,6 +103,7 @@ include 'includes/head.php';
     </div>
 
     <div class="top-actions">
+        <a href="learning_path.php?path_id=1" style="text-decoration:none;"><button class="pvp-btn" style="background: #00ff00; border-color:#00ff00; color:black;">🗺️ Learning Path</button></a>
         <a href="pvp.php" style="text-decoration:none;"><button class="pvp-btn">⚔️ PvP Arena</button></a>
         <a href="minigame.php" style="text-decoration:none;"><button class="pvp-btn" style="margin-top:10px; background: #ff00ff; border-color:#ff00ff;">🎮 Mini-Game</button></a>
         <a href="tutorial.php" style="text-decoration:none;"><button class="pvp-btn" style="margin-top:10px; background: #00ffff; border-color:#00ffff; color:black;">📖 Tutorial</button></a>

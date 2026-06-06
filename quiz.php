@@ -111,6 +111,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
     
     async function endQuiz() {
+        let nextLessonUnlocked = false;
+        
         if (score > 0) {
             try {
                 const resp = await fetch("award_xp.php", {
@@ -125,8 +127,56 @@ document.addEventListener("DOMContentLoaded", async function () {
             } catch (e) {
                 console.error(e);
             }
+            
+            // Check if quiz passed (score > 70%)
+            const percentage = (score / 100) * 100;
+            if (percentage > 70) {
+                try {
+                    // Find and unlock next lesson in path
+                    const pathResp = await fetch(`learning_path_api.php?action=get_paths`);
+                    const pathData = await pathResp.json();
+                    
+                    if (pathData.success && pathData.paths.length > 0) {
+                        const pathId = pathData.paths[0].path_id;
+                        
+                        // Get path progress to find current lesson
+                        const progressResp = await fetch(`learning_path_api.php?action=get_path_progress&path_id=${pathId}`);
+                        
+                        if (progressResp.ok) {
+                            const progressData = await progressResp.json();
+                            
+                            // Find the current lesson for this topic in the path
+                            const currentLesson = progressData.lessons.find(l => 
+                                l.course.toLowerCase() === topic.toLowerCase() && 
+                                !l.completed && !l.locked
+                            );
+                            
+                            if (currentLesson && currentLesson.path_lesson_id) {
+                                // Mark current lesson complete and unlock next
+                                const unlockResp = await fetch('learning_path_api.php?action=unlock_next', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                    body: `path_lesson_id=${currentLesson.path_lesson_id}`
+                                });
+                                
+                                const unlockData = await unlockResp.json();
+                                if (unlockData.success) {
+                                    nextLessonUnlocked = true;
+                                    alert(`🎉 Quiz passed! Next lesson unlocked!`);
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error unlocking next lesson:', e);
+                }
+            }
         }
-        alert(`Quiz finished! You earned ${score} XP.`);
+        
+        const message = nextLessonUnlocked 
+            ? `Quiz finished! You earned ${score} XP. Next lesson unlocked!`
+            : `Quiz finished! You earned ${score} XP.`;
+        alert(message);
         window.location.href = "dashboard.php";
     }
     

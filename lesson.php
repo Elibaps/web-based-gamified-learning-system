@@ -90,6 +90,23 @@ include 'includes/head.php';
 
   <!-- LESSON CONTENT -->
   <div class="lesson-content">
+    <!-- LEARNING PATH PROGRESS SECTION -->
+    <?php if ($user_id): ?>
+      <div style="background: var(--card-bg); border: 2px solid var(--primary-color); border-radius: 6px; padding: 15px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h4 style="color: var(--primary-color); margin: 0 0 5px 0;">📚 Learning Path Progress</h4>
+            <p style="margin: 0; color: var(--muted-color); font-size: 0.9em;">
+              Track your progress through the structured learning path
+            </p>
+          </div>
+          <a href="learning_path.php?path_id=1" style="display: inline-block; padding: 10px 15px; background: var(--primary-color); color: var(--bg-color); border: none; border-radius: 4px; text-decoration: none; font-weight: bold; cursor: pointer; font-family: 'Minecraft', monospace;">
+            🗺️ View Full Path
+          </a>
+        </div>
+      </div>
+    <?php endif; ?>
+
     <?php if ($lesson): ?>
       <?php
       // Lesson HTML is authored/seeded content (trusted), not user input.
