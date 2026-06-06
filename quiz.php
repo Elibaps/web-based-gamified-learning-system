@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const resp = await fetch("award_xp.php", {
                   method:  "POST",
                   headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                  body:    `xp=${score}`,
+                  body:    `xp=${score}&course=${encodeURIComponent(topic)}&lesson_slug=quiz`,
                 });
                 const data = await resp.json();
                 if (data.leveledUp) {

@@ -61,9 +61,13 @@ let isTyping  = false;
 let dlgQueue  = [];
 let totalXP   = 0;
 let storyOpen = true;
+let terminalOpen = false;
 
 // ── Elements ─────────────────────────────────────────────────────────────────
-const scene       = document.getElementById("worldScene");
+const scene         = document.getElementById("worldScene");
+const storyGrid     = document.querySelector(".story-grid");
+const codePanel     = document.querySelector(".code-panel");
+const terminalToggle= document.getElementById("terminalToggle");
 const dlgBox      = document.getElementById("rpgDialogue");
 const dlgSpeaker  = document.getElementById("rpgSpeaker");
 const dlgText     = document.getElementById("rpgText");
@@ -74,6 +78,10 @@ const stageBadge  = document.getElementById("stageBadge");
 const objText     = document.getElementById("objText");
 const sbChapter   = document.getElementById("sbChapter");
 const worldStage  = document.getElementById("worldStage");
+const rewardTitle = document.getElementById("rewardQuestTitle");
+const rewardDesc  = document.getElementById("rewardQuestDetails");
+const rewardXP    = document.getElementById("rewardXP");
+const rewardUnlock= document.getElementById("rewardUnlock");
 const xpCounter   = document.getElementById("xpCounter");
 const cpOutput    = document.getElementById("cpOutput");
 const cpOutContent= document.getElementById("cpOutContent");
@@ -84,10 +92,40 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize loading screen
   initializeLoadingScreen();
   
+  // Keep the terminal hidden until the player chooses CODE
+  collapseCodePanel();
+
   // Load first stage but keep hidden until loading screen is dismissed
   loadStage(0);
   scene.addEventListener("click", onSceneClick);
 });
+
+function collapseCodePanel() {
+  terminalOpen = false;
+  if (storyGrid) storyGrid.classList.add("terminal-collapsed");
+  if (codePanel) codePanel.classList.add("hidden");
+  if (terminalToggle) terminalToggle.textContent = "💻 OPEN TERMINAL";
+}
+
+function revealCodePanel() {
+  if (!terminalOpen) {
+    terminalOpen = true;
+    if (storyGrid) storyGrid.classList.remove("terminal-collapsed");
+    if (codePanel) codePanel.classList.remove("hidden");
+    if (terminalToggle) terminalToggle.textContent = "💻 TERMINAL READY";
+    setTimeout(() => codeEditor.focus(), 250);
+  }
+}
+
+function revealCodePanel() {
+  if (!terminalOpen) {
+    terminalOpen = true;
+    if (storyGrid) storyGrid.classList.remove("terminal-collapsed");
+    if (codePanel) codePanel.classList.remove("hidden");
+    if (terminalToggle) terminalToggle.textContent = "💻 TERMINAL READY";
+    setTimeout(() => codeEditor.focus(), 250);
+  }
+}
 
 // ── Loading Screen Handler ───────────────────────────────────────────────────
 function initializeLoadingScreen() {
@@ -129,6 +167,7 @@ function initializeLoadingScreen() {
 function loadStage(idx) {
   stageIdx = idx;
   dlgIdx   = 0;
+  collapseCodePanel();
 
   const s = STAGES[idx];
   langBadge.textContent = s.lang;
@@ -136,6 +175,19 @@ function loadStage(idx) {
   objText.textContent   = s.objective;
   sbChapter.textContent = s.chapter;
   worldStage.textContent= s.sector;
+
+  if (stageIdx < STAGES.length - 1) {
+    const next = STAGES[stageIdx + 1];
+    rewardTitle.textContent = `Current mission: ${s.sector}`;
+    rewardDesc.textContent  = `Solve this challenge to earn ${s.xp} XP and unlock ${next.lang}.`;
+    rewardXP.textContent    = `+${s.xp} XP`;
+    rewardUnlock.textContent= `Next unlock: ${next.sector}`;
+  } else {
+    rewardTitle.textContent = `FINAL MISSION: ${s.sector}`;
+    rewardDesc.textContent  = `Defeat CYPH-3R and finish the story path with a major XP reward.`;
+    rewardXP.textContent    = `+${s.xp} XP`;
+    rewardUnlock.textContent= `Unlocks: Victory and endgame rewards`;
+  }
 
   // Activate mission log entry
   document.querySelectorAll(".story-entry").forEach(el => el.classList.remove("active-story"));
@@ -227,6 +279,8 @@ function doAction(action) {
   worldActions.style.display = "none";
 
   if (action === "code") {
+    worldActions.style.display = "none";
+    revealCodePanel();
     flashCodePanel();
     queueMsg("CYPH-3R", "spk-npc", "So you choose to fight with code? I look forward to your failure...");
   } else if (action === "study") {
@@ -346,10 +400,9 @@ function showVictory(stage) {
   fetch("award_xp.php", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: "xp=" + stage.xp,
-  }).catch(e => console.warn("XP award failed", e));
-}
-
+    body: "xp=" + stage.xp +
+          "&course=" + encodeURIComponent(stage.lang) +
+          "&lesson_slug=practice",
 function nextStage() {
   document.getElementById("vOverlay").style.display = "none";
   if (stageIdx + 1 >= STAGES.length) {
