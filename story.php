@@ -6,6 +6,84 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 $username = htmlspecialchars($_SESSION['username']);
+
+// ── Fetch progress for the story learning path ──────────────────────────
+$user_id = $_SESSION['user_id'] ?? null;
+if (!$user_id) {
+    $stmt = $conn->prepare("SELECT user_id FROM users WHERE username = ?");
+    $stmt->bind_param("s", $_SESSION['username']);
+    $stmt->execute();
+    $urow = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    $user_id = $urow['user_id'] ?? null;
+    if ($user_id) {
+        $_SESSION['user_id'] = $user_id;
+    }
+}
+
+$pathCourses = [
+    ['name' => 'HTML',       'desc' => 'Unlock the markup path and restore the mainframe interface.'],
+    ['name' => 'CSS',        'desc' => 'Repair the style engine and make the world visually stable.'],
+    ['name' => 'JavaScript', 'desc' => 'Bring the logic core back to life with working scripts.'],
+    ['name' => 'PHP',        'desc' => 'Execute the final backend restore command to defeat CYPH-3R.'],
+];
+
+$learningPath = [];
+if ($user_id) {
+    $stmt = $conn->prepare(
+        "SELECT l.course, l.slug, l.title, l.sort_order, 
+                (up.progress_id IS NOT NULL) AS done 
+         FROM lessons l
+         LEFT JOIN user_progress up
+           ON up.course = l.course
+          AND up.lesson_slug = l.slug
+          AND up.user_id = ?
+         WHERE l.course IN ('HTML', 'CSS', 'JavaScript', 'PHP')
+         ORDER BY l.course, l.sort_order"
+    );
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+
+    foreach ($pathCourses as $pc) {
+        $learningPath[$pc['name']] = [
+            'desc'       => $pc['desc'],
+            'completed'  => 0,
+            'total'      => 0,
+            'nextSlug'   => 'intro',
+            'nextTitle'  => 'Begin the path',
+        ];
+    }
+
+    foreach ($rows as $row) {
+        $course = $row['course'];
+        if (!isset($learningPath[$course])) {
+            continue;
+        }
+        $learningPath[$course]['total']++;
+        if ($row['done']) {
+            $learningPath[$course]['completed']++;
+        } elseif ($learningPath[$course]['nextTitle'] === 'Begin the path') {
+            $learningPath[$course]['nextSlug'] = $row['slug'];
+            $learningPath[$course]['nextTitle'] = $row['title'];
+        }
+    }
+
+    foreach ($learningPath as $course => &$status) {
+        if ($status['total'] > 0) {
+            $status['percent'] = round(($status['completed'] / $status['total']) * 100);
+        } else {
+            $status['percent'] = 0;
+        }
+        if ($status['completed'] === $status['total']) {
+            $status['nextSlug'] = 'quiz';
+            $status['nextTitle'] = 'Path complete — challenge the quiz';
+        }
+    }
+    unset($status);
+}
+
 $pageTitle = 'Story Mode — CodeNest';
 include 'includes/head.php';
 ?>
@@ -76,6 +154,7 @@ include 'includes/head.php';
     <div class="world-header">
       <span class="world-title">🗺 PIXEL WORLD</span>
       <span class="world-stage" id="worldStage">SECTOR 01 — MAINFRAME CORE</span>
+      <button class="terminal-toggle" id="terminalToggle" onclick="revealCodePanel()">💻 OPEN TERMINAL</button>
     </div>
 
     <!-- The RPG scene canvas -->
@@ -229,8 +308,52 @@ include 'includes/head.php';
 
 </div><!-- /.story-grid -->
 
-<!-- ════════════════════════════════════════
-     BOTTOM: Mission Description Story-line
+<div class="story-reward" id="storyRewardPanel">
+  <div class="reward-heading">🎁 Next Quest Reward</div>
+  <div class="reward-body">
+    <div class="reward-title" id="rewardQuestTitle">Prepare for the next mission.</div>
+    <div class="reward-details" id="rewardQuestDetails">Complete your current challenge to earn XP and unlock the next story path.</div>
+    <div class="reward-meta">
+      <span id="rewardXP">+0 XP</span>
+      <span id="rewardUnlock">Unlock: The next sector</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════     LEARNING PATH SUMMARY — connects story quests with lesson progress
+══════════════════════════════════════════════ -->
+<div class="path-summary">
+  <div class="path-header">
+    <span>🧭 Learning Path</span>
+    <span class="path-note">Story quests now connect to your lessons and quiz progress.</span>
+  </div>
+  <div class="path-cards">
+    <?php if (!empty($learningPath)): ?>
+      <?php foreach ($learningPath as $course => $meta): ?>
+        <?php $safeCourse = htmlspecialchars($course, ENT_QUOTES, 'UTF-8'); ?>
+        <div class="path-card">
+          <div class="path-card-top">
+            <strong><?php echo $safeCourse; ?></strong>
+            <span><?php echo htmlspecialchars($meta['desc'], ENT_QUOTES, 'UTF-8'); ?></span>
+          </div>
+          <div class="path-status">
+            <div class="path-fill" style="width: <?php echo $meta['percent']; ?>%;"></div>
+          </div>
+          <div class="path-card-footer">
+            <span><?php echo $meta['percent']; ?>% Complete</span>
+            <a href="lesson.php?course=<?php echo urlencode($course); ?>&lesson=<?php echo urlencode($meta['nextSlug']); ?>">Next: <?php echo htmlspecialchars($meta['nextTitle'], ENT_QUOTES, 'UTF-8'); ?></a>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <div class="path-card empty">
+        <p>Your learning path will appear here once you start lessons, quizzes, or story battles. Open the terminal and defeat the boss to unlock the next lesson.</p>
+      </div>
+    <?php endif; ?>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════     BOTTOM: Mission Description Story-line
 ════════════════════════════════════════ -->
 <div class="story-bar">
   <div class="story-bar-header">

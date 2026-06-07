@@ -25,6 +25,10 @@ $username = $_SESSION['username'];
 
 // Clamp XP to a sane range to prevent tampering
 $xpGain = max(0, min(500, (int)($_POST['xp'] ?? 0)));
+$course = trim($_POST['course'] ?? '');
+$lesson_slug = trim($_POST['lesson_slug'] ?? '');
+$allowed_courses = ['HTML', 'CSS', 'JavaScript', 'PHP', 'Java', 'C++'];
+$allowed_lessons  = ['intro', 'basics', 'syntax', 'practice', 'quiz'];
 
 // Fetch current level and exp
 $stmt = $conn->prepare(
@@ -50,6 +54,16 @@ while ($newExp >= $newLevel * 100) {
     $newExp  -= $newLevel * 100;
     $newLevel++;
     $leveledUp = true;
+}
+
+// Record lesson progress if valid course and lesson data were provided
+if (in_array($course, $allowed_courses, true) && in_array($lesson_slug, $allowed_lessons, true)) {
+    $progStmt = $conn->prepare(
+        "INSERT IGNORE INTO user_progress (user_id, course, lesson_slug) VALUES (?, ?, ?)"
+    );
+    $progStmt->bind_param("iss", $user['user_id'], $course, $lesson_slug);
+    $progStmt->execute();
+    $progStmt->close();
 }
 
 // Persist updated stats

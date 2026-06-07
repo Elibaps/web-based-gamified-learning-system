@@ -1535,6 +1535,26 @@ body::before {
   flex: 1;
   height: calc(100vh - 70px - 160px);
   min-height: 420px;
+  transition: grid-template-columns 0.35s ease;
+}
+.story-grid.terminal-collapsed {
+  grid-template-columns: 1fr 0fr;
+}
+
+.terminal-toggle {
+  border: 2px solid var(--primary-color);
+  background: rgba(74,222,128,0.08);
+  color: var(--primary-color);
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Minecraft', monospace;
+  transition: transform 0.2s, background 0.2s;
+}
+.terminal-toggle:hover {
+  background: rgba(74,222,128,0.2);
+  transform: translateY(-1px);
 }
 
 /* ══ LEFT — Pixel World Panel ═══════════════════════════════ */
@@ -1775,6 +1795,12 @@ body::before {
   display: flex;
   flex-direction: column;
   background: var(--bg-color);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.code-panel.hidden {
+  opacity: 0;
+  transform: translateX(20px) scale(0.98);
+  pointer-events: none;
 }
 
 .cp-header {
@@ -1907,12 +1933,125 @@ body::before {
 .cp-out-err { border-color: var(--danger-color);  color: var(--danger-color);  background: rgba(255,0,0,0.07); }
 
 /* ══ BOTTOM — Story Bar ══════════════════════════════════════ */
-.story-bar {
-  border-top: 4px solid var(--primary-color);
+.path-summary {
   background: var(--card-bg);
-  flex-shrink: 0;
+  border: 4px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  margin: 16px 18px 0;
+  box-shadow: 6px 6px 0 var(--shadow-color);
 }
-.story-bar-header {
+.path-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+.path-note {
+  color: var(--muted-color);
+  font-size: 10px;
+}
+.path-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.path-card {
+  background: rgba(74,222,128,0.05);
+  border: 2px solid rgba(74,222,128,0.15);
+  border-radius: var(--border-radius);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.path-card.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--muted-color);
+}
+.path-card-top strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+.path-card-top span {
+  font-size: 11px;
+  color: var(--text-color);
+}
+.path-status {
+  position: relative;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+}
+.path-fill {
+  height: 100%;
+  background: var(--primary-color);
+  transition: width 0.4s ease;
+}
+.path-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  color: var(--muted-color);
+}
+.path-card-footer a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: bold;
+}
+.path-card-footer a:hover {
+  text-decoration: underline;
+}
+
+.story-reward {
+  background: rgba(74,222,128,0.08);
+  border: 3px solid rgba(74,222,128,0.25);
+  border-radius: var(--border-radius);
+  margin: 16px 18px 0;
+  padding: 14px 18px;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.08);
+}
+.reward-heading {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+}
+.reward-details {
+  color: var(--text-color);
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+.reward-meta {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  color: var(--muted-color);
+  font-size: 11px;
+}
+
+.match-status {
+  color: var(--muted-color);
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.battle-box .btn {
+  min-width: 120px;
+}
+
+.story-bar {
   display: flex;
   align-items: center;
   gap: 12px;
