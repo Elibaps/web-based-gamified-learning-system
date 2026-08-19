@@ -275,6 +275,23 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     overlay.style.display = "flex";
+
+    // Bind return button to either the provided RETURN_URL (from server) or the dashboard
+    const returnBtn = document.getElementById('battleReturnBtn');
+    if (returnBtn) {
+      returnBtn.onclick = () => {
+        try {
+          if (typeof RETURN_URL !== 'undefined' && RETURN_URL) {
+            if (RETURN_URL === 'story') window.location.href = 'story.php';
+            else window.location.href = RETURN_URL;
+          } else {
+            window.location.href = 'dashboard.php';
+          }
+        } catch (e) {
+          window.location.href = 'dashboard.php';
+        }
+      };
+    }
   }
 
   // ── Event listeners ─────────────────────────────────────────────────────

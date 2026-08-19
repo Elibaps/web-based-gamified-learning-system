@@ -25,14 +25,16 @@ $username = $_SESSION['username'];
 
 // Clamp XP to a sane range to prevent tampering
 $xpGain = max(0, min(500, (int)($_POST['xp'] ?? 0)));
+// Allow optional coin rewards for Story Mode interactables
+$coinsGain = max(0, min(1000, (int)($_POST['coins'] ?? 0)));
 $course = trim($_POST['course'] ?? '');
 $lesson_slug = trim($_POST['lesson_slug'] ?? '');
 $allowed_courses = ['HTML', 'CSS', 'JavaScript', 'PHP', 'Java', 'C++'];
 $allowed_lessons  = ['intro', 'basics', 'syntax', 'practice', 'quiz'];
 
-// Fetch current level and exp
+// Fetch current level, exp, and coins
 $stmt = $conn->prepare(
-    "SELECT user_id, level, exp FROM users WHERE username = ?"
+    "SELECT user_id, level, exp, coins FROM users WHERE username = ?"
 );
 $stmt->bind_param("s", $username);
 $stmt->execute();
@@ -66,13 +68,28 @@ if (in_array($course, $allowed_courses, true) && in_array($lesson_slug, $allowed
     $progStmt->close();
 }
 
-// Persist updated stats
-$stmt = $conn->prepare(
-    "UPDATE users SET exp = ?, level = ? WHERE user_id = ?"
-);
-$stmt->bind_param("iii", $newExp, $newLevel, $user['user_id']);
+// Persist updated stats (also add coins if provided)
+if ($coinsGain > 0) {
+    $stmt = $conn->prepare(
+        "UPDATE users SET exp = ?, level = ?, coins = coins + ? WHERE user_id = ?"
+    );
+    $stmt->bind_param("iiii", $newExp, $newLevel, $coinsGain, $user['user_id']);
+} else {
+    $stmt = $conn->prepare(
+        "UPDATE users SET exp = ?, level = ? WHERE user_id = ?"
+    );
+    $stmt->bind_param("iii", $newExp, $newLevel, $user['user_id']);
+}
 $stmt->execute();
 $stmt->close();
+
+// Fetch updated coin total for response
+$coinsStmt = $conn->prepare("SELECT coins FROM users WHERE user_id = ?");
+$coinsStmt->bind_param("i", $user['user_id']);
+$coinsStmt->execute();
+$coinRow = $coinsStmt->get_result()->fetch_assoc();
+$coinsStmt->close();
+$newCoins = (int)($coinRow['coins'] ?? $user['coins']);
 
 // Update session cache
 $_SESSION['user_id'] = $user['user_id'];
@@ -84,4 +101,5 @@ echo json_encode([
     'newExp'    => $newExp,
     'newLevel'  => $newLevel,
     'leveledUp' => $leveledUp,
+    'newCoins'  => $newCoins,
 ]);

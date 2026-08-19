@@ -127,12 +127,13 @@ include 'includes/head.php';
     <h2 id="overlayTitle"></h2>
     <p id="overlayMsg"></p>
     <div class="overlay-xp" id="overlayXP"></div>
-    <button class="btn battle-btn" onclick="window.location.href='dashboard.php'">Return to Base</button>
+    <button class="btn battle-btn" id="battleReturnBtn">Return</button>
   </div>
 </div>
 
 <script>
   const BATTLE_TOPIC = <?php echo json_encode($topic); ?>;
+  const RETURN_URL = <?php echo json_encode($_GET['return'] ?? null); ?>; // e.g. 'story' to return to story.php
 </script>
 <script src="battlelogic.js"></script>
 <?php include 'includes/footer.php'; ?>

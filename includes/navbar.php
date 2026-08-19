@@ -6,20 +6,20 @@
     <a href="dashboard.php" class="logo-text" style="text-decoration:none;color:inherit;">🪙 CodeNest</a>
 
     <div class="nav-item dropdown">
-      Learn ▾
+      <a href="learning_path.php" style="text-decoration:none;color:inherit;">Learn ▾</a>
       <div class="dropdown-menu">
         <div class="menu-column">
           <h4>Web Dev</h4>
-          <a href="battle.php?topic=HTML">HTML</a>
-          <a href="battle.php?topic=CSS">CSS</a>
-          <a href="battle.php?topic=JavaScript">JavaScript</a>
+          <a href="learning_path.php?course=HTML">HTML</a>
+          <a href="learning_path.php?course=CSS">CSS</a>
+          <a href="learning_path.php?course=JavaScript">JavaScript</a>
         </div>
 
         <div class="menu-column">
           <h4>Languages</h4>
-          <a href="battle.php?topic=PHP">PHP</a>
-          <a href="battle.php?topic=Java">Java</a>
-          <a href="battle.php?topic=C%2B%2B">C++</a>
+          <a href="learning_path.php?course=PHP">PHP</a>
+          <a href="learning_path.php?course=Java">Java</a>
+          <a href="learning_path.php?course=C%2B%2B">C++</a>
         </div>
 
         <div class="menu-column">
@@ -32,7 +32,8 @@
     </div>
 
     <a href="practice.php" class="nav-item" style="text-decoration:none; color:inherit;">Practice</a>
-    <a href="build.php" class="nav-item" style="text-decoration:none; color:inherit;">Build</a>
+    <a href="story.php" class="nav-item" style="text-decoration:none; color:inherit;">Story Mode</a>
+    <a href="pvp.php" class="nav-item" style="text-decoration:none; color:inherit;">PvP</a>
     <a href="community.php" class="nav-item" style="text-decoration:none; color:inherit;">Community</a>
   </div>
 

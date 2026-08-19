@@ -399,5 +399,78 @@ include 'includes/head.php';
   </div>
 </div>
 
-<script src="storylogic.js"></script>
+<?php
+// Inject Story Mode game container and minimal HUD. Provide server-side user stats to the game.
+$__story_coins = 0; $__story_level = 1; $__story_exp = 0;
+if (isset($_SESSION['user_id'])) {
+    $s = $conn->prepare("SELECT coins, level, exp FROM users WHERE user_id = ?");
+    $s->bind_param("i", $_SESSION['user_id']);
+    $s->execute();
+    $urow = $s->get_result()->fetch_assoc();
+    $s->close();
+    if ($urow) {
+        $__story_coins = (int)($urow['coins'] ?? 0);
+        $__story_level = (int)($urow['level'] ?? 1);
+        $__story_exp   = (int)($urow['exp'] ?? 0);
+    }
+}
+?>
+
+<!-- Phaser Game Container & Minimal HUD -->
+<div id="gameShell" style="display:flex;flex-direction:column;align-items:stretch;gap:6px;">
+  <div id="hud" style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--card-bg);border-bottom:2px solid var(--primary-color);">
+    <div style="display:flex;gap:12px;align-items:center;">
+      <div id="hudUsername" style="font-weight:700;color:var(--primary-color);"></div>
+      <div id="hudLevel"></div>
+      <div id="hudXP"></div>
+      <div id="hudCoins"></div>
+    </div>
+    <div id="hudObjective" style="font-style:italic;color:var(--muted-color);">Objective: —</div>
+  </div>
+
+  <div id="gameContainer" style="width:100%;height:calc(100vh - 160px);background:#0f172a;overflow:hidden;display:flex;justify-content:center;align-items:center;"></div>
+
+  <div id="interactionPrompt" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);color:white;padding:6px 10px;border-radius:6px;display:none;z-index:50;">Press E to interact</div>
+
+  <div id="notification" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);color:white;padding:8px 12px;border-radius:6px;z-index:50;"></div>
+</div>
+
+<!-- Dialogue Box -->
+<div id="dialogueBox" style="display:none;position:fixed;right:20px;bottom:120px;z-index:60;background:var(--card-bg);border:3px solid var(--primary-color);padding:12px;width:320px;border-radius:8px;">
+  <div style="font-weight:bold;margin-bottom:6px;"><span id="dialogueSpeaker"></span></div>
+  <div id="dialogueText" style="margin-bottom:10px;color:var(--muted-color);"></div>
+  <button id="dialogueNext" class="cp-btn">Next</button>
+</div>
+
+<!-- Challenge Modal -->
+<div id="challengeModal" style="display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:70;background:var(--card-bg);border:3px solid var(--primary-color);padding:16px;width:520px;border-radius:8px;">
+  <h3>Programming Challenge</h3>
+  <div id="challengeQuestion" style="margin:8px 0;color:var(--muted-color);"></div>
+  <input id="challengeAnswer" type="text" style="width:100%;padding:8px;margin-bottom:8px;" placeholder="Type your answer here">
+  <div style="display:flex;gap:8px;justify-content:flex-end"><button id="challengeSubmit" class="cp-btn">Submit</button><button onclick="document.getElementById('challengeModal').style.display='none'" class="cp-btn cp-clear">Close</button></div>
+</div>
+
+<!-- Shop Modal -->
+<div id="shopModal" style="display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:70;background:var(--card-bg);border:3px solid var(--primary-color);padding:16px;width:420px;border-radius:8px;">
+  <h3>Shop</h3>
+  <div>Coins: <span id="shopCoins"></span></div>
+  <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;"><span>Health Potion</span><button class="shopBuy cp-btn" data-key="health_potion" data-price="20">Buy (20)</button></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;"><span>XP Potion</span><button class="shopBuy cp-btn" data-key="xp_potion" data-price="50">Buy (50)</button></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;"><span>Small Decoration</span><button class="shopBuy cp-btn" data-key="small_tree" data-price="30">Buy (30)</button></div>
+  </div>
+  <div style="text-align:right;margin-top:10px;"><button onclick="document.getElementById('shopModal').style.display='none'" class="cp-btn cp-clear">Close</button></div>
+</div>
+
+<!-- Provide server-side variables for game JS -->
+<script>
+  window.STORY_USERNAME = <?php echo json_encode($username); ?>;
+  window.STORY_LEVEL = <?php echo json_encode($__story_level); ?>;
+  window.STORY_EXP   = <?php echo json_encode($__story_exp); ?>;
+  window.STORY_COINS = <?php echo json_encode($__story_coins); ?>;
+</script>
+
+<!-- Phaser and Story Mode game script -->
+<script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+<script src="story/game/main.js"></script>
 <?php include 'includes/footer.php'; ?>
