@@ -1,0 +1,16 @@
+Heyo! 
+Thank you for purchasing Tiny Wonder Swamp Asset Pack! :D
+
+Here are a few guidelines for slicing and animating the characters included in the pack:
+
+Frog:
+- Frog npc is 24px tall and 32px wide
+- You can prolong the first frame of the idle animation however you would like to create a smoother idle animation
+
+Main Character:
+- Idle and walking animations are 24x by 24px
+- Fishing animations are 44px tall and 50px wide
+- You can prolong the fishing animation by extending or multiplying the frames with bait in the water
+
+
+Hope you enjoy the pack and look forward for more updates!
