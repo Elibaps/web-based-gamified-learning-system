@@ -67,134 +67,551 @@ body::before {
   font-family: 'Minecraft';
   src: url('fonts/Minecraftia-Regular.ttf'); /* fixed path */
 }
-/* AUTH PAGE */
-.logo {
-  width: 220px; 
-  max-width: 80%;
-  margin-bottom: 20px;
-  height: auto;
-  display: block;
-  margin: 0 auto 20px;
-  image-rendering: pixelated;
-}
-.auth-container {
-    position: relative;
-
-    width: 420px;
-    max-width: 90%;
-    min-height: 500px;
-
-    padding: 50px 40px 60px;
-    box-sizing: border-box;
-
-    text-align: center;
-
-    /* ONE complete grass + dirt panel */
-    background-image: url("assets/login_panel-lowerpanel.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 100% 100%;
-
-    border: none;
-    border-radius: 0;
-
-    /* Floating shadow */
-    filter: drop-shadow(0 16px 10px rgba(0, 0, 0, 0.45));
-
-    image-rendering: pixelated;
-
-    z-index: 1;
-}
+/* =========================================================
+   CODENEST AUTH SYSTEM
+   Login / Register / Forgot Password
+   ========================================================= */
 
 .auth-page {
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-x: hidden;
+  background-color: #163f38;
+  background-image:
+    linear-gradient(rgba(7, 25, 21, 0.08), rgba(7, 25, 21, 0.08)),
+    url("assets/auth-bg.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+  image-rendering: pixelated;
 }
 
-/* FADE IN */
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.5) rotate(-5deg);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1.2) rotate(0deg);
-  }
+.auth-page::before {
+  display: none;
 }
 
-/* INPUT STYLE */
-.auth-form input {
+.auth-container {
+  position: relative;
+  z-index: 2;
+  width: 540px;
+  height: 675px;
+  max-width: 94vw;
+  box-sizing: border-box;
+  padding: 72px 70px 108px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: url("assets/auth-container-panel.png") center / 100% 100% no-repeat;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  filter: drop-shadow(0 16px 10px rgba(0, 0, 0, 0.42));
+  image-rendering: pixelated;
+  animation: auth-panel-enter 280ms steps(5, end);
+}
+
+@keyframes auth-panel-enter {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.auth-container .logo {
+  display: block;
+  width: 170px;
+  max-width: 46%;
+  height: auto;
+  margin: 0 auto 16px;
+  image-rendering: pixelated;
+}
+
+.auth-form {
+  width: 82%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* ---------------------------------------------------------
+   WOODEN RPG INPUT COMPONENT
+   The PNG belongs to this wrapper, never to the <input>.
+   Browser autofill can no longer remove the wooden frame.
+   --------------------------------------------------------- */
+.rpg-input {
+  position: relative;
   width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  background: var(--bg-color);
-  border: 4px solid var(--primary-color);
-  color: var(--text-color);
+  height: 100px;
+  flex: 0 0 100px;
+  background: url("assets/placeholder-frame.png") center / 100% 100% no-repeat;
+  image-rendering: pixelated;
+  transform: translateY(0);
+  transform-origin: center;
   transition: none;
-  font-family: 'Minecraft', monospace;
-}
-/* INPUT FOCUS */
-.auth-form input:focus {
-  outline: none;
-  background: var(--shadow-color);
+  margin-top: -25px;
 }
 
-/* BUTTON */
-.btn {
+.rpg-input:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04) drop-shadow(0 3px 0 rgba(67, 42, 24, 0.36));
+}
+
+.rpg-input:focus-within {
+  transform: translateY(-2px);
+  filter:
+    brightness(1.08)
+    drop-shadow(0 3px 0 #4c301f)
+    drop-shadow(0 0 2px rgba(229, 200, 98, 0.62));
+}
+
+.rpg-input > input[type="text"],
+.rpg-input > input[type="password"],
+.rpg-input > input[type="email"] {
+  position: absolute;
+  left: 48px;
+  right: 38px;
+  top: 10px;
+  bottom: 10px;
+  width: calc(100% - 86px);
+  height: calc(100% - 20px);
+  margin: 0;
+  padding: 6px 10px 0;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  font-family: 'Minecraft', monospace;
+  font-size: 12px;
+  line-height: 1;
+  color: #4d2e1e;
+  caret-color: #4d2e1e;
+  text-shadow: 1px 1px 0 rgba(223, 163, 88, 0.38);
+  image-rendering: pixelated;
+  transform: none !important;
+  filter: none !important;
+}
+
+.rpg-input > input::placeholder {
+  color: #70442b;
+  opacity: 1;
+  text-shadow: 1px 1px 0 rgba(231, 177, 97, 0.38);
+}
+
+.rpg-input > input::-moz-placeholder {
+  color: #70442b;
+  opacity: 1;
+}
+
+/* Chromium / Edge autofill.
+   The wrapper owns the wood frame, while the real input stays visually transparent. */
+.rpg-input > input:-webkit-autofill,
+.rpg-input > input:-webkit-autofill:hover,
+.rpg-input > input:-webkit-autofill:focus,
+.rpg-input > input:-webkit-autofill:active {
+  -webkit-text-fill-color: #4d2e1e !important;
+  caret-color: #4d2e1e !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+  box-shadow: 0 0 0 1000px transparent inset !important;
+  -webkit-background-clip: text;
+  background-clip: text;
+  transition: background-color 99999s ease-out 0s;
+}
+
+/* ---------------------------------------------------------
+   REMEMBER-ME BARREL
+   --------------------------------------------------------- */
+.remember-me {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: fit-content;
+  margin: -1px 0 1px 4px;
+  font-family: 'Minecraft', monospace;
+  font-size: 11px;
+  user-select: none;
+}
+
+.remember-text {
+  color: #70442b;
+  text-shadow: 1px 1px 0 #d8c95f;
+}
+
+.remember-me:hover .remember-text {
+  color: #4f2f20;
+}
+
+.remember-me input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pixel-checkbox {
+  display: block;
+  width: 44px;
+  height: 50px;
+  flex-shrink: 0;
+  background: url("assets/barrel-empty.png") center / 44px 50px no-repeat;
+  image-rendering: pixelated;
+  transform-origin: bottom center;
+  transition: none;
+}
+
+.remember-me:hover .pixel-checkbox {
+  animation: barrel-hover 500ms steps(2, end) infinite;
+}
+
+@keyframes barrel-hover {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+
+.remember-me:active .pixel-checkbox {
+  animation: none;
+  transform: translateY(3px) scaleX(1.08) scaleY(0.88);
+}
+
+.remember-me input[type="checkbox"]:checked + .pixel-checkbox {
+  background-image: url("assets/barrel-filled.png");
+  animation: barrel-fill 220ms steps(3, end);
+}
+
+@keyframes barrel-fill {
+  0%   { transform: translateY(3px) scaleX(1.10) scaleY(0.85); }
+  45%  { transform: translateY(-5px) scale(1.08); }
+  70%  { transform: translateY(1px) scale(0.98); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.remember-me input[type="checkbox"]:focus-visible + .pixel-checkbox {
+  filter: brightness(1.18) drop-shadow(0 0 3px #e1ec66);
+}
+
+/* ---------------------------------------------------------
+   AUTH BUTTON
+   --------------------------------------------------------- */
+.auth-form .btn {
+  display: block;
   width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  background: var(--primary-color);
-  border: 4px solid var(--primary-color);
-  box-shadow: 4px 4px 0 var(--shadow-color);
-  color: black;
-  cursor: pointer;
-  font-weight: bold;
+  height: 56px;
+  flex: 0 0 56px;
+  margin: 0;
+  padding: 0 18px;
+  border: 5px solid #17542f;
+  border-radius: 0;
+  background: #76bb2f;
+  box-shadow:
+    inset 0 4px 0 #a6d23d,
+    inset 0 -5px 0 #488d2a,
+    4px 4px 0 #0e3829;
   font-family: 'Minecraft', monospace;
+  font-size: 13px;
+  font-weight: normal;
+  text-transform: uppercase;
+  color: #142515;
+  text-shadow: none;
+  image-rendering: pixelated;
+  transform: translate(0, 0);
   transition: none;
 }
 
-/* BUTTON PRESS */
-.btn:active {
-  transform: translate(4px, 4px);
-  box-shadow: 0 0 0 var(--shadow-color);
+.auth-form .btn:hover {
+  background: #88ca37;
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 4px 0 #b8df48,
+    inset 0 -5px 0 #57992d,
+    4px 6px 0 #0e3829;
 }
 
-/* HOVER */
-.btn:hover {
-  background: var(--bg-color);
-  color: var(--primary-color);
+.auth-form .btn:active {
+  transform: translate(3px, 3px);
+  box-shadow:
+    inset 0 3px 0 #458328,
+    inset 0 -3px 0 #326d21,
+    1px 1px 0 #0e3829;
 }
 
-/* SHAKE ERROR */
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
+.auth-form .btn:focus-visible {
+  outline: 3px solid #e3ed6d;
+  outline-offset: 3px;
+}
+
+/* ---------------------------------------------------------
+   AUTH TEXT / LINKS
+   --------------------------------------------------------- */
+.forgot-password,
+.register-link,
+.login-link {
+  width: 82%;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: 'Minecraft', monospace;
+  font-size: 10px;
+  line-height: 1.55;
+  color: #68402a;
+  text-shadow: 1px 1px 0 rgba(222, 207, 98, 0.72);
+}
+
+.forgot-password {
+  margin-top: 7px;
+  margin-bottom: 0;
+  text-align: right;
+}
+
+.register-link,
+.login-link {
+  margin-top: 6px;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.forgot-password a,
+.register-link a,
+.login-link a {
+  color: #4f2f20;
+  text-decoration: none;
+  text-shadow: 1px 1px 0 #ddd069;
+}
+
+.forgot-password a:hover,
+.register-link a:hover,
+.login-link a:hover {
+  color: #2f1c15;
+  text-shadow: 1px 1px 0 #eee37c, 0 0 3px rgba(83, 105, 35, 0.55);
+}
+
+.forgot-password a:active,
+.register-link a:active,
+.login-link a:active {
+  display: inline-block;
+  transform: translateY(2px);
+}
+
+.register-title,
+.forgot-page-title {
+  margin: 0 auto 10px;
+  font-family: 'Minecraft', monospace;
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 1.2;
+  color: #684128;
+  text-shadow: 2px 2px 0 #d8ce66;
+}
+
+.forgot-page-subtitle {
+  width: 82%;
+  margin: 0 auto 12px;
+  font-family: 'Minecraft', monospace;
+  font-size: 11px;
+  line-height: 1.55;
+  color: #70442b;
+  text-shadow: 1px 1px 0 #d8c95f;
+}
+
+/* ---------------------------------------------------------
+   PAGE-SPECIFIC SPACING
+   --------------------------------------------------------- */
+.login-page .auth-container {
+  padding-top: 64px;
+}
+
+.login-page .auth-container .logo {
+  margin-bottom: 13px;
+}
+
+.login-page .auth-form {
+  gap: 9px;
+}
+
+.register-page .auth-container {
+  padding-top: 55px;
+}
+
+.register-page .auth-container .logo {
+  width: 145px;
+  margin-bottom: 5px;
+}
+
+.register-page .auth-form {
+  gap: 7px;
+}
+
+.register-page .rpg-input {
+}
+
+.register-page .rpg-input > input {
+  top: 9px;
+  bottom: 9px;
+  height: calc(100% - 18px);
+}
+
+.register-page .auth-form .btn {
+  height: 52px;
+  flex-basis: 52px;
+}
+
+.register-page .login-link {
+  margin-top: 7px;
+}
+
+.forgot-password-page .auth-container {
+  padding-top: 61px;
+}
+
+.forgot-password-page .auth-container .logo {
+  width: 150px;
+  margin-bottom: 7px;
+}
+
+.forgot-password-page .auth-form {
+  gap: 10px;
+}
+
+.forgot-password-page .rpg-input {
+}
+
+.forgot-password-page .auth-form .btn {
+  height: 54px;
+  flex-basis: 54px;
+}
+
+.forgot-password-page .login-link {
+  margin-top: 9px;
+}
+
+/* ---------------------------------------------------------
+   MESSAGES
+   --------------------------------------------------------- */
+.auth-message,
+.password-reset-message {
+  width: 82%;
+  margin: 0 auto 10px;
+  padding: 8px 10px;
+  border: 3px solid #412419;
+  background: #704232;
+  color: #ffe3a8;
+  font-family: 'Minecraft', monospace;
+  font-size: 9px;
+  line-height: 1.45;
+  text-shadow: 1px 1px 0 #2d1a13;
+  image-rendering: pixelated;
+}
+
+.auth-message.success,
+.password-reset-message {
+  border-color: #315b2c;
+  background: #6f8f3f;
+  box-shadow:
+    inset 0 3px 0 #91ad4e,
+    inset 0 -3px 0 #4e6f31,
+    3px 3px 0 #294424;
+  color: #4a2d1e;
+  text-shadow: 1px 1px 0 #d9d069;
 }
 
 .shake {
-  animation: shake 0.3s;
+  animation: auth-shake 180ms steps(4, end);
 }
 
-/* LOADING SCREEN */
+@keyframes auth-shake {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-4px); }
+  50%      { transform: translateX(4px); }
+  75%      { transform: translateX(-4px); }
+}
+
+/* Login submit overlay. */
 #loadingScreen {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #0a0a0a;
-  color: var(--primary-color);
+  inset: 0;
   display: none;
   justify-content: center;
   align-items: center;
-  font-size: 20px;
-  z-index: 999;
+  background: rgba(4, 14, 9, 0.92);
+  z-index: 10000;
+}
+
+#loadingScreen p {
+  margin: 0;
+  padding: 16px 20px;
+  border: 4px solid #16442d;
+  background: #2d6337;
+  box-shadow: inset 0 3px 0 #4e8749, 5px 5px 0 #071c13;
+  color: #f0efb3;
+  font-family: 'Minecraft', monospace;
+  font-size: 11px;
+  text-shadow: 1px 1px 0 #173822;
+  animation: auth-loading-blink 700ms steps(2, end) infinite;
+}
+
+@keyframes auth-loading-blink {
+  50% { opacity: 0.55; }
+}
+
+@media (max-width: 620px) {
+  .auth-container {
+    width: 480px;
+    height: 600px;
+    padding-left: 54px;
+    padding-right: 54px;
+  }
+
+  .auth-container .logo {
+    width: 145px;
+  }
+
+  .auth-form,
+  .forgot-password,
+  .register-link,
+  .login-link,
+  .auth-message,
+  .password-reset-message,
+  .forgot-page-subtitle {
+    width: 86%;
+  }
+
+  .rpg-input {
+    height: 100px;
+    flex-basis: 100px;
+  }
+
+  .rpg-input > input[type="text"],
+  .rpg-input > input[type="password"],
+  .rpg-input > input[type="email"] {
+    left: 42px;
+    right: 34px;
+    width: calc(100% - 76px);
+    top: 9px;
+    bottom: 9px;
+    height: calc(100% - 18px);
+    padding-top: 5px;
+    font-size: 10px;
+  }
+
+  .pixel-checkbox {
+    width: 35px;
+    height: 40px;
+    background-size: 35px 40px;
+  }
+
+  .remember-me {
+    font-size: 9px;
+  }
 }
 
 /* DASHBOARD */
@@ -1094,7 +1511,6 @@ body::before {
 .link a:hover {
   text-decoration: underline;
 }
-
 /* PVP BUTTON */
 .pvp-btn {
   padding: 12px 20px;
@@ -3244,3 +3660,35 @@ body::before {
   letter-spacing: 2px;
   margin: 4px 0 0 0;
 }
+
+
+/* =========================================================
+   CODENEST GLOBAL PIXEL CURSORS
+   ========================================================= */
+html,
+body,
+body * {
+  cursor: url("assets/cursor.png") 0 0, auto !important;
+}
+
+a,
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="checkbox"],
+input[type="radio"],
+select,
+label[for],
+.remember-me {
+  cursor: url("assets/cursor-click.png") 0 0, pointer !important;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="search"],
+textarea {
+  cursor: text !important;
+}
+
