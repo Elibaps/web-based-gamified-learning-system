@@ -1,9 +1,12 @@
 <?php
 // Requires: session_start() called + $_SESSION['username'] is set
+$usernameForNav = (string)($_SESSION['username'] ?? 'U');
+$navInitial = strtoupper(substr($usernameForNav, 0, 1));
+$navAvatarExists = file_exists(__DIR__ . '/../images/player.png');
 ?>
 <div class="navbar">
   <div class="nav-left">
-    <a href="dashboard.php" class="logo-text" style="text-decoration:none;color:inherit;">🪙 CodeNest</a>
+    <a href="dashboard.php" class="logo-text" aria-label="CodeNest Dashboard">CodeNest</a>
 
     <div class="nav-item dropdown">
       Learn ▾
@@ -38,11 +41,15 @@
 
   <div class="nav-right">
     <div class="profile-menu">
-      <button id="themeToggleBtn" style="background: none; border: 2px solid var(--primary-color); color: var(--primary-color); font-size: 1.2rem; cursor: pointer; padding: 5px 10px; border-radius: var(--border-radius);">🌞</button>
+      <button id="themeToggleBtn" class="theme-toggle-btn" type="button" aria-label="Toggle theme">🌞</button>
     </div>
 
     <div class="profile-menu">
-      <img src="images/player.png" class="nav-avatar" alt="Profile Avatar">
+      <?php if ($navAvatarExists): ?>
+        <img src="images/player.png" class="nav-avatar" alt="Profile Avatar">
+      <?php else: ?>
+        <span class="nav-avatar" aria-label="Profile avatar"><?php echo htmlspecialchars($navInitial, ENT_QUOTES, 'UTF-8'); ?></span>
+      <?php endif; ?>
       <div class="profile-dropdown">
         <a href="profile.php">My Profile</a>
         <a href="settings.php">Settings</a>

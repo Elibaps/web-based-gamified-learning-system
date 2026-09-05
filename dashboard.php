@@ -37,7 +37,7 @@ $percent   = $expNeeded > 0 ? min(100, round(($exp / $expNeeded) * 100)) : 0;
 
 // ── Leaderboard ───────────────────────────────────────────────────────────
 $stmt = $conn->prepare(
-    "SELECT username, exp FROM users ORDER BY exp DESC LIMIT 5"
+    "SELECT username, level, exp FROM users ORDER BY level DESC, exp DESC LIMIT 5"
 );
 $stmt->execute();
 $leaders = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -77,131 +77,282 @@ include 'includes/head.php';
 
 <?php include 'includes/navbar.php'; ?>
 
-<!-- TOP BAR -->
-<div class="top-bar">
+<!-- ======================================================
+     BIG DASHBOARD HERO
+     Static artwork = PNG assets
+     Dynamic player/leaderboard values = PHP + HTML/CSS
+     ====================================================== -->
+<section class="top-bar dashboard-hero" aria-label="Player dashboard overview">
 
-    <div class="profile">
-        <img src="images/player.png" class="profile-pic" alt="Player Avatar">
-        <div>
-            <h3><?php echo htmlspecialchars($row['username'], ENT_QUOTES, 'UTF-8'); ?></h3>
-            <p>Level <?php echo $level; ?></p>
-            <div class="xp-bar">
-                <div class="xp-fill" data-percent="<?php echo $percent; ?>"></div>
+    <section class="player-status-card" aria-label="Player status">
+        <div class="player-status-content">
+
+            <div class="player-summary">
+                <img src="assets/player.png" class="profile-pic" alt="Player Avatar">
+
+                <div class="player-identity">
+                    <h2><?php echo htmlspecialchars($row['username'], ENT_QUOTES, 'UTF-8'); ?></h2>
+                    <div class="player-level-badge">LEVEL <?php echo $level; ?></div>
+                </div>
             </div>
-            <small><?php echo $exp; ?> / <?php echo $expNeeded; ?> XP</small>
+
+            <div class="player-xp">
+                <span class="player-xp-label">XP PROGRESS</span>
+
+                <div class="xp-meter" aria-label="XP progress">
+                    <div class="xp-meter-track">
+                        <div class="xp-fill" data-percent="<?php echo $percent; ?>"></div>
+                    </div>
+                </div>
+
+                <small><?php echo $exp; ?> / <?php echo $expNeeded; ?> XP</small>
+            </div>
+
         </div>
-    </div>
+    </section>
 
-    <div class="mini-leaderboard">
-        <h3>🏆 Top Players</h3>
-        <?php foreach ($leaders as $leader): ?>
-            <div class="leader">
-                <?php echo htmlspecialchars($leader['username'], ENT_QUOTES, 'UTF-8'); ?>
-                &mdash; <?php echo (int)$leader['exp']; ?> XP
-            </div>
-        <?php endforeach; ?>
-    </div>
+    <section class="mini-leaderboard" aria-label="Top players">
+        <div class="leaderboard-list">
+            <?php foreach ($leaders as $index => $leader): ?>
+                <?php $rank = $index + 1; ?>
 
-    <div class="top-actions">
-        <a href="learning_path.php?path_id=1" style="text-decoration:none;"><button class="pvp-btn" style="background: #00ff00; border-color:#00ff00; color:black;">🗺️ Learning Path</button></a>
-        <a href="pvp.php" style="text-decoration:none;"><button class="pvp-btn">⚔️ PvP Arena</button></a>
-        <a href="minigame.php" style="text-decoration:none;"><button class="pvp-btn" style="margin-top:10px; background: #ff00ff; border-color:#ff00ff;">🎮 Mini-Game</button></a>
-        <a href="tutorial.php" style="text-decoration:none;"><button class="pvp-btn" style="margin-top:10px; background: #00ffff; border-color:#00ffff; color:black;">📖 Tutorial</button></a>
-        <a href="story.php" style="text-decoration:none;"><button class="pvp-btn" style="margin-top:10px; background: #ffb000; border-color:#ffb000; color:black;">📜 Story Intro</button></a>
-    </div>
+                <div class="leader">
+                    <div class="leader-rank">
+                        <?php if ($rank <= 3): ?>
+                            <img
+                                src="assets/leaderboard-top-<?php echo $rank; ?>.png"
+                                alt="Rank <?php echo $rank; ?>"
+                            >
+                        <?php else: ?>
+                            <span><?php echo $rank; ?></span>
+                        <?php endif; ?>
+                    </div>
 
-</div>
+                    <span class="leader-name">
+                        <?php echo htmlspecialchars($leader['username'], ENT_QUOTES, 'UTF-8'); ?>
+                    </span>
+
+                    <span class="leader-level">
+                        LV. <?php echo (int)$leader['level']; ?>
+                    </span>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <a class="leaderboard-view-button" href="leaderboard.php">
+            <span>VIEW LEADERBOARD</span>
+        </a>
+    </section>
+
+    <nav class="top-actions" aria-label="Dashboard actions">
+
+        <a class="dashboard-action learning-path-action"
+           href="learning_path.php?path_id=1">
+            <img src="assets/learningpath-icon.png"
+                 class="dashboard-action-icon"
+                 alt=""
+                 aria-hidden="true">
+            <span>LEARNING PATH</span>
+        </a>
+
+        <a class="dashboard-action matchmaking-action"
+           href="pvp.php">
+            <img src="assets/matchmaking-icon.png"
+                 class="dashboard-action-icon"
+                 alt=""
+                 aria-hidden="true">
+            <span>MATCHMAKING</span>
+        </a>
+
+        <a class="dashboard-action minigame-action"
+           href="minigame.php">
+            <img src="assets/minigame-icon.png"
+                 class="dashboard-action-icon"
+                 alt=""
+                 aria-hidden="true">
+            <span>MINI-GAME</span>
+        </a>
+
+        <a class="dashboard-action story-action"
+           href="story.php">
+            <img src="assets/story-icon.png"
+                 class="dashboard-action-icon"
+                 alt=""
+                 aria-hidden="true">
+            <span>STORY INTRO</span>
+        </a>
+
+    </nav>
+
+</section>
 
 <!-- DAILY TECH TRIVIA -->
-<div class="dashboard-wrapper" style="padding-bottom: 0;">
-    <div style="background: var(--card-bg); border: 4px solid var(--primary-color); box-shadow: 6px 6px 0 var(--shadow-color); padding: 20px; display: flex; align-items: center; gap: 20px;">
-        <div style="font-size: 3rem;">💡</div>
-        <div>
-            <h3 style="color: var(--primary-color); margin-bottom: 5px;">Daily Tech Trivia</h3>
-            <p style="color: #94a3b8;" id="triviaText">Loading trivia...</p>
+<section class="daily-trivia-section" aria-labelledby="dailyTriviaTitle">
+    <div class="daily-trivia-panel">
+
+        <div class="daily-trivia-icon-wrap" aria-hidden="true">
+            <img
+                src="assets/dailytrivia-icon.png"
+                class="daily-trivia-icon"
+                alt=""
+            >
         </div>
+
+        <div class="daily-trivia-content">
+            <h3 id="dailyTriviaTitle" class="daily-trivia-title">
+                DAILY TECH TRIVIA
+            </h3>
+
+            <div class="daily-trivia-text-frame">
+                <p id="triviaText">Loading trivia...</p>
+            </div>
+        </div>
+
     </div>
-</div>
+</section>
 
-<!-- LANGUAGE SELECTION -->
-<div class="dashboard-wrapper">
+<!-- LANGUAGE SELECTION / COURSES -->
+<section class="courses-section" aria-labelledby="coursesHeading">
+  <div class="courses-panel">
+    <h2 id="coursesHeading" class="sr-only">Courses</h2>
 
-  <!-- SEARCH + FILTER -->
-  <div class="top-controls">
-    <input class="search-bar" id="searchBar" placeholder="Search courses..."
-           oninput="filterCourses()" autocomplete="off">
+    <div class="courses-controls">
+      <label class="courses-search-wrap" for="searchBar">
+        <span class="courses-search-icon" aria-hidden="true"></span>
+        <input
+          class="search-bar"
+          id="searchBar"
+          type="search"
+          placeholder="Search courses..."
+          oninput="filterCourses()"
+          autocomplete="off"
+        >
+      </label>
 
-    <div class="filter active-filter" onclick="filterByTag(this,'all')">All</div>
-    <div class="filter" onclick="filterByTag(this,'beginner')">Beginner</div>
-    <div class="filter" onclick="filterByTag(this,'intermediate')">Intermediate</div>
-    <div class="filter" onclick="filterByTag(this,'advanced')">Advanced</div>
+      <div class="courses-filters" aria-label="Course difficulty filters">
+        <button class="filter active-filter" type="button" onclick="filterByTag(this,'all')">ALL</button>
+        <button class="filter" type="button" onclick="filterByTag(this,'beginner')">BEGINNER</button>
+        <button class="filter" type="button" onclick="filterByTag(this,'intermediate')">INTERMEDIATE</button>
+        <button class="filter" type="button" onclick="filterByTag(this,'advanced')">ADVANCED</button>
+      </div>
+    </div>
+
+    <?php
+    $courseCards = [
+        [
+            'name' => 'HTML',
+            'slug' => 'html',
+            'tag' => 'beginner',
+            'difficulty' => 'Beginner',
+            'logo' => 'html-logo.png',
+            'desc' => 'Create the structure of websites.',
+        ],
+        [
+            'name' => 'CSS',
+            'slug' => 'css',
+            'tag' => 'beginner',
+            'difficulty' => 'Beginner',
+            'logo' => 'css-logo.png',
+            'desc' => 'Design and layout beautifully.',
+        ],
+        [
+            'name' => 'JavaScript',
+            'slug' => 'javascript',
+            'tag' => 'beginner',
+            'difficulty' => 'Beginner',
+            'logo' => 'javascript-logo.png',
+            'desc' => 'Add logic and interactivity.',
+        ],
+        [
+            'name' => 'PHP',
+            'slug' => 'php',
+            'tag' => 'intermediate',
+            'difficulty' => 'Intermediate',
+            'logo' => 'php-logo.png',
+            'desc' => 'Backend web development.',
+        ],
+        [
+            'name' => 'Java',
+            'slug' => 'java',
+            'tag' => 'intermediate',
+            'difficulty' => 'Intermediate',
+            'logo' => 'java-logo.png',
+            'desc' => 'Object-oriented programming.',
+        ],
+        [
+            'name' => 'C++',
+            'slug' => 'c++',
+            'tag' => 'advanced',
+            'difficulty' => 'Advanced',
+            'logo' => 'cpp-logo.png',
+            'desc' => 'High-performance programming.',
+        ],
+    ];
+    ?>
+
+    <div class="course-grid" id="courseGrid">
+      <?php foreach ($courseCards as $course): ?>
+        <?php
+          $courseProgress = $progress[$course['name']] ?? ['percent' => 0, 'completed' => 0, 'total' => 0];
+          $coursePct = (int)$courseProgress['percent'];
+          $courseDone = (int)$courseProgress['completed'];
+          $courseTotal = (int)$courseProgress['total'];
+
+          $safeName = htmlspecialchars($course['name'], ENT_QUOTES, 'UTF-8');
+          $safeDesc = htmlspecialchars($course['desc'], ENT_QUOTES, 'UTF-8');
+          $safeDifficulty = htmlspecialchars($course['difficulty'], ENT_QUOTES, 'UTF-8');
+          $safeTag = htmlspecialchars($course['tag'], ENT_QUOTES, 'UTF-8');
+          $safeSlug = htmlspecialchars($course['slug'], ENT_QUOTES, 'UTF-8');
+          $safeLogo = htmlspecialchars($course['logo'], ENT_QUOTES, 'UTF-8');
+        ?>
+
+        <article
+          class="course-card"
+          data-tag="<?php echo $safeTag; ?>"
+          data-name="<?php echo $safeSlug; ?>"
+          tabindex="0"
+          role="button"
+          onclick="openLesson('<?php echo $safeName; ?>')"
+          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson('<?php echo $safeName; ?>');}"
+        >
+          <div class="course-card-top">
+            <div class="course-logo-box">
+              <img
+                src="assets/<?php echo $safeLogo; ?>"
+                class="course-logo"
+                alt="<?php echo $safeName; ?> logo"
+              >
+            </div>
+
+            <div class="course-heading">
+              <h3 class="course-title"><?php echo $safeName; ?></h3>
+              <span class="course-difficulty difficulty-<?php echo $safeTag; ?>">
+                <?php echo $safeDifficulty; ?>
+              </span>
+            </div>
+          </div>
+
+          <p class="course-desc"><?php echo $safeDesc; ?></p>
+
+          <div class="course-progress-meta">
+            <span><?php echo $courseDone; ?> / <?php echo $courseTotal; ?> Lessons</span>
+          </div>
+
+          <div
+            class="course-progress"
+            role="progressbar"
+            aria-label="<?php echo $safeName; ?> course progress"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="<?php echo $coursePct; ?>"
+          >
+            <span class="course-progress-fill" style="width: <?php echo $coursePct; ?>%;"></span>
+          </div>
+        </article>
+      <?php endforeach; ?>
+    </div>
   </div>
-
-  <!-- COURSES -->
-  <div class="course-grid" id="courseGrid">
-
-    <div class="course-card" data-tag="beginner" data-name="html"
-         onclick="openLesson('HTML')">
-      <img src="images/html.png" alt="HTML">
-      <div class="course-content">
-        <div class="course-title">HTML</div>
-        <div class="course-desc">Create the structure of websites</div>
-        <div class="badge-easy">Beginner</div>
-      </div>
-    </div>
-
-    <div class="course-card" data-tag="beginner" data-name="css"
-         onclick="openLesson('CSS')">
-      <img src="images/css.png" alt="CSS">
-      <div class="course-content">
-        <div class="course-title">CSS</div>
-        <div class="course-desc">Design and layout beautifully</div>
-        <div class="badge-easy">Beginner</div>
-      </div>
-    </div>
-
-    <div class="course-card" data-tag="beginner" data-name="javascript"
-         onclick="openLesson('JavaScript')">
-      <img src="images/js.png" alt="JavaScript">
-      <div class="course-content">
-        <div class="course-title">JavaScript</div>
-        <div class="course-desc">Add logic and interactivity</div>
-        <div class="badge-easy">Beginner</div>
-      </div>
-    </div>
-
-    <div class="course-card" data-tag="intermediate" data-name="php"
-         onclick="openLesson('PHP')">
-      <img src="images/php.png" alt="PHP">
-      <div class="course-content">
-        <div class="course-title">PHP</div>
-        <div class="course-desc">Backend web development</div>
-        <div class="badge-hard">Intermediate</div>
-      </div>
-    </div>
-
-    <div class="course-card" data-tag="intermediate" data-name="java"
-         onclick="openLesson('Java')">
-      <img src="images/java.png" alt="Java">
-      <div class="course-content">
-        <div class="course-title">Java</div>
-        <div class="course-desc">Object-oriented programming</div>
-        <div class="badge-hard">Intermediate</div>
-      </div>
-    </div>
-
-    <div class="course-card" data-tag="advanced" data-name="c++"
-         onclick="openLesson('C++')">
-      <img src="images/cpp.png" alt="C++">
-      <div class="course-content">
-        <div class="course-title">C++</div>
-        <div class="course-desc">High-performance programming</div>
-        <div class="badge-adv">Advanced</div>
-      </div>
-    </div>
-
-  </div>
-</div>
+</section>
 
 <!-- FEATURE SECTION -->
 <div class="feature-section">
