@@ -1478,29 +1478,6 @@ body {
 .dashboard-page .dashboard-parallax-vignette {
   z-index: 6;
 }
-
-/* Reduced motion = living scenery remains visible, but stationary. */
-@media (prefers-reduced-motion: reduce) {
-  .dashboard-page .dashboard-firefly,
-  .dashboard-page .dashboard-mote,
-  .dashboard-page .dashboard-leaf {
-    animation: none !important;
-  }
-
-  .dashboard-page .dashboard-firefly {
-    opacity: 0.35;
-  }
-
-  [data-theme="light"] .dashboard-page .dashboard-firefly {
-    opacity: 0;
-  }
-
-  [data-theme="light"] .dashboard-page .dashboard-mote {
-    opacity: 0.26;
-  }
-}
-
-
 /* =========================================================
    COURSES — RPG ASSET COMPOSITION
    courses-panel + search placeholder + difficulty buttons
