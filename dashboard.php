@@ -77,6 +77,20 @@ include 'includes/head.php';
 
 <?php include 'includes/navbar.php'; ?>
 
+<!-- LIVING DASHBOARD BACKGROUND -->
+<div class="dashboard-parallax" aria-hidden="true">
+    <div class="dashboard-parallax-layer dashboard-parallax-far"></div>
+    <div class="dashboard-parallax-layer dashboard-parallax-mid"></div>
+    <div class="dashboard-parallax-layer dashboard-parallax-near"></div>
+
+    <div class="dashboard-particles dashboard-fireflies"></div>
+    <div class="dashboard-particles dashboard-motes"></div>
+    <div class="dashboard-leaves"></div>
+
+    <div class="dashboard-parallax-vignette"></div>
+</div>
+
+
 <!-- ======================================================
      BIG DASHBOARD HERO
      Static artwork = PNG assets
@@ -139,9 +153,7 @@ include 'includes/head.php';
             <?php endforeach; ?>
         </div>
 
-        <a class="leaderboard-view-button" href="leaderboard.php">
-            <span>VIEW LEADERBOARD</span>
-        </a>
+        <a class="leaderboard-view-button" href="leaderboard.php"></a>
     </section>
 
     <nav class="top-actions" aria-label="Dashboard actions">
@@ -354,65 +366,56 @@ include 'includes/head.php';
   </div>
 </section>
 
-<!-- FEATURE SECTION -->
-<div class="feature-section">
-  <div class="feature-box">
-    <img src="images/practice.png" alt="Practice">
-    <div>
-      <h2>Practice your coding chops</h2>
-      <p>Sharpen your skills with coding battles and quizzes.</p>
-    </div>
-  </div>
+<!-- PRACTICE + COMMUNITY -->
+<section class="dashboard-feature-hub" aria-label="Practice and community">
 
-  <div class="feature-box reverse">
-    <img src="images/community.png" alt="Community">
-    <div>
-      <h2>Join a coding community</h2>
-      <p>Compete with friends and climb the leaderboard.</p>
-    </div>
-  </div>
-</div>
+  <article class="dashboard-feature-panel practice-feature">
+    <div class="feature-scene feature-scene-practice" aria-hidden="true"></div>
+    <div class="feature-copy-card">
+      <div class="feature-parchment">
+        <div class="feature-parchment-copy">
+          <h2>Practice your coding chops</h2>
+          <p>Sharpen your skills with coding battles, quizzes, and hands-on challenges.</p>
 
-<!-- LEARNING PATHS -->
-<div class="learning-section">
-  <div class="dashboard-wrapper">
-    <div class="section-header">
-      <h2>Your Learning Paths</h2>
-      <p>Continue your coding journey.</p>
-    </div>
-
-    <div class="path-grid">
-      <?php
-      $pathCourses = [
-          ['name' => 'HTML',       'img' => 'html.png', 'desc' => 'Learn website structure, tags, forms, media, and semantic HTML.'],
-          ['name' => 'CSS',        'img' => 'css.png',  'desc' => 'Master layouts, flexbox, grid, animations, and responsive design.'],
-          ['name' => 'JavaScript', 'img' => 'js.png',   'desc' => 'Build interactive websites, logic systems, and dynamic apps.'],
-      ];
-      foreach ($pathCourses as $pc):
-          $pct   = $progress[$pc['name']]['percent']   ?? 0;
-          $done  = $progress[$pc['name']]['completed'] ?? 0;
-          $total = $progress[$pc['name']]['total']     ?? 0;
-          $safe  = htmlspecialchars($pc['name'], ENT_QUOTES, 'UTF-8');
-      ?>
-        <div class="path-card">
-          <img src="images/<?php echo $pc['img']; ?>" class="path-image" alt="<?php echo $safe; ?>">
-          <div class="path-content">
-            <h3><?php echo $safe; ?> Roadmap</h3>
-            <p><?php echo $pc['desc']; ?></p>
-            <div class="progress-container">
-              <div class="progress-fill" style="width:<?php echo $pct; ?>%"></div>
-            </div>
-            <small><?php echo $pct; ?>% Complete (<?php echo $done; ?>/<?php echo $total; ?> lessons)</small>
-            <div class="path-buttons">
-              <button onclick="startBattle('<?php echo $safe; ?>')">Continue</button>
-              <button onclick="startQuiz('<?php echo $safe; ?>')">Quiz</button>
-            </div>
-          </div>
+          <ul class="feature-benefits">
+            <li>Coding Challenges</li>
+            <li>Timed Exercises</li>
+            <li>Earn XP &amp; Rewards</li>
+          </ul>
         </div>
-      <?php endforeach; ?>
+      </div>
+
+      <a class="feature-rpg-button" href="practice.php">
+        <span>GO TO PRACTICE</span>
+        <span class="feature-button-arrow" aria-hidden="true">›</span>
+      </a>
     </div>
-  </div>
-</div>
+  </article>
+
+  <article class="dashboard-feature-panel community-feature">
+    <div class="feature-scene feature-scene-community" aria-hidden="true"></div>
+    <div class="feature-copy-card">
+      <div class="feature-parchment">
+        <div class="feature-parchment-copy">
+          <h2>Join a coding community</h2>
+          <p>Connect with other learners, share ideas, and compare your progress.</p>
+
+          <ul class="feature-benefits">
+            <li>Discuss &amp; Share</li>
+            <li>Leaderboard Progress</li>
+            <li>Connect with Learners</li>
+          </ul>
+        </div>
+      </div>
+
+      <a class="feature-rpg-button" href="community.php">
+        <span>GO TO COMMUNITY</span>
+        <span class="feature-button-arrow" aria-hidden="true">›</span>
+      </a>
+    </div>
+  </article>
+
+</section>
 
 <script>
 /* ── Trivia Array ────────────────────────────────────────── */
@@ -472,6 +475,56 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => { xpFill.style.width = target + "%"; }, 150);
     }
 });
+
+
+/* ── Dashboard Ambient Particles ───────────────────────── */
+(function () {
+    const page = document.body;
+    if (!page || !page.classList.contains("dashboard-page")) return;
+
+    const fireflyHost = document.querySelector(".dashboard-fireflies");
+    const moteHost = document.querySelector(".dashboard-motes");
+    const leafHost = document.querySelector(".dashboard-leaves");
+
+    function makeParticles(host, count, className) {
+        if (!host || host.children.length) return;
+
+        for (let i = 0; i < count; i++) {
+            const particle = document.createElement("span");
+            particle.className = className;
+
+            particle.style.setProperty("--x", `${(Math.random() * 100).toFixed(2)}%`);
+            particle.style.setProperty("--y", `${(Math.random() * 100).toFixed(2)}%`);
+            particle.style.setProperty("--delay", `${(-Math.random() * 8).toFixed(2)}s`);
+            particle.style.setProperty("--duration", `${(4.8 + Math.random() * 5.8).toFixed(2)}s`);
+            particle.style.setProperty("--drift", `${(-30 + Math.random() * 60).toFixed(1)}px`);
+            particle.style.setProperty("--size", `${(2 + Math.random() * 4).toFixed(1)}px`);
+
+            host.appendChild(particle);
+        }
+    }
+
+    function makeLeaves(host, count) {
+        if (!host || host.children.length) return;
+
+        for (let i = 0; i < count; i++) {
+            const leaf = document.createElement("span");
+            leaf.className = "dashboard-leaf";
+
+            leaf.style.setProperty("--x", `${(Math.random() * 100).toFixed(2)}%`);
+            leaf.style.setProperty("--delay", `${(-Math.random() * 15).toFixed(2)}s`);
+            leaf.style.setProperty("--duration", `${(9.5 + Math.random() * 8).toFixed(2)}s`);
+            leaf.style.setProperty("--sway", `${(40 + Math.random() * 82).toFixed(1)}px`);
+
+            host.appendChild(leaf);
+        }
+    }
+
+    /* Slightly lively without turning the dashboard into a particle storm. */
+    makeParticles(fireflyHost, 40, "dashboard-firefly");
+    makeParticles(moteHost, 44, "dashboard-mote");
+    makeLeaves(leafHost, 12);
+})();
 </script>
 
 <?php include 'includes/footer.php'; ?>

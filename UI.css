@@ -1154,6 +1154,353 @@ body {
   }
 }
 
+
+/* =========================================================
+   DASHBOARD LIVING BACKGROUND — LIGHT / DARK STATIC LAYERS
+   ========================================================= */
+
+.dashboard-page {
+  --dash-bg-far:  url("assets/dashboard-bg-far-dark.png");
+  --dash-bg-mid:  url("assets/dashboard-bg-mid-dark.png");
+  --dash-bg-near: url("assets/dashboard-bg-near-dark.png");
+
+  position: relative;
+  isolation: isolate;
+  background: #07101c;
+}
+
+[data-theme="light"] .dashboard-page {
+  --dash-bg-far:  url("assets/dashboard-bg-far-light.png");
+  --dash-bg-mid:  url("assets/dashboard-bg-mid-light.png");
+  --dash-bg-near: url("assets/dashboard-bg-near-light.png");
+
+  background: #bfe0f2;
+}
+
+.dashboard-page .dashboard-parallax {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: #07101c;
+}
+
+[data-theme="light"] .dashboard-page .dashboard-parallax {
+  background: #bfe0f2;
+}
+
+.dashboard-page .dashboard-parallax-layer {
+  position: absolute;
+  inset: 0;
+
+  background-repeat: no-repeat;
+  background-position: center 50%;
+  background-size: cover;
+
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* Far background layer */
+.dashboard-page .dashboard-parallax-far {
+  z-index: 1;
+  background-image: var(--dash-bg-far);
+  background-size: cover;
+  background-position: center center;
+  transform: scale(1.01);
+  transform-origin: center center;
+}
+
+/* Mid source is opaque, so fade it in toward the lower scene. */
+.dashboard-page .dashboard-parallax-mid {
+  z-index: 2;
+  background-image: var(--dash-bg-mid);
+  background-size: cover;
+
+  -webkit-mask-image:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0,0,0,.06) 18%,
+      rgba(0,0,0,.42) 40%,
+      #000 70%,
+      #000 100%
+    );
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0,0,0,.06) 18%,
+      rgba(0,0,0,.42) 40%,
+      #000 70%,
+      #000 100%
+    );
+  background-position: center center;
+  transform: scale(1.01);
+  transform-origin: center center;
+}
+
+/* Near foreground layer, strongest toward the bottom/edges. */
+.dashboard-page .dashboard-parallax-near {
+  z-index: 3;
+  background-image: var(--dash-bg-near);
+  background-size: cover;
+
+  -webkit-mask-image:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 35%,
+      rgba(0,0,0,.16) 52%,
+      rgba(0,0,0,.78) 72%,
+      #000 100%
+    );
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 35%,
+      rgba(0,0,0,.16) 52%,
+      rgba(0,0,0,.78) 72%,
+      #000 100%
+    );
+  background-position: 58% center;
+  transform: scale(1.01);
+  transform-origin: center center;
+}
+
+.dashboard-page .dashboard-parallax-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(2,7,14,.05) 0%,
+      rgba(2,7,14,.12) 52%,
+      rgba(2,7,14,.27) 100%
+    );
+}
+
+[data-theme="light"] .dashboard-page .dashboard-parallax-vignette {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255,255,255,.02) 0%,
+      rgba(234,246,251,.06) 50%,
+      rgba(42,76,86,.11) 100%
+    );
+}
+
+.dashboard-page > .dashboard-hero,
+.dashboard-page > .daily-trivia-section,
+.dashboard-page > .courses-section,
+.dashboard-page > .dashboard-feature-hub,
+.dashboard-page > footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* =========================================================
+   DASHBOARD AMBIENT LIFE
+   Dark mode  = fireflies
+   Light mode = pollen / dust motes
+   Both modes = occasional drifting leaves
+   ========================================================= */
+
+.dashboard-page .dashboard-particles,
+.dashboard-page .dashboard-leaves {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.dashboard-page .dashboard-firefly,
+.dashboard-page .dashboard-mote,
+.dashboard-page .dashboard-leaf {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+/* ---------------- DARK MODE: FIREFLIES ---------------- */
+
+.dashboard-page .dashboard-firefly {
+  left: var(--x);
+  top: var(--y);
+
+  width: var(--size);
+  height: var(--size);
+
+  border-radius: 50%;
+
+  background: #f4f27a;
+
+  box-shadow:
+    0 0 4px #f6f57d,
+    0 0 9px rgba(223, 242, 91, 0.82),
+    0 0 16px rgba(158, 220, 75, 0.44);
+
+  opacity: 0;
+
+  animation:
+    dashboard-firefly-float var(--duration) ease-in-out var(--delay) infinite,
+    dashboard-firefly-glow 2.4s steps(4, end) var(--delay) infinite;
+}
+
+@keyframes dashboard-firefly-float {
+  0% {
+    transform: translate3d(0, 18px, 0);
+  }
+  35% {
+    transform: translate3d(var(--drift), -12px, 0);
+  }
+  70% {
+    transform: translate3d(calc(var(--drift) * -0.45), -30px, 0);
+  }
+  100% {
+    transform: translate3d(0, 18px, 0);
+  }
+}
+
+@keyframes dashboard-firefly-glow {
+  0%, 100% { opacity: 0.12; }
+  30%      { opacity: 0.95; }
+  55%      { opacity: 0.35; }
+  78%      { opacity: 0.80; }
+}
+
+/* Hide fireflies during daytime. */
+[data-theme="light"] .dashboard-page .dashboard-fireflies {
+  opacity: 0;
+}
+
+/* ---------------- LIGHT MODE: POLLEN / MOTES ---------------- */
+
+.dashboard-page .dashboard-mote {
+  left: var(--x);
+  top: var(--y);
+
+  width: var(--size);
+  height: var(--size);
+
+  border-radius: 50%;
+  background: rgba(255, 245, 190, 0.92);
+
+  box-shadow: 0 0 4px rgba(255, 246, 186, 0.45);
+
+  opacity: 0;
+
+  animation:
+    dashboard-mote-float var(--duration) linear var(--delay) infinite;
+}
+
+@keyframes dashboard-mote-float {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+  }
+  15% {
+    opacity: 0.55;
+  }
+  65% {
+    opacity: 0.34;
+    transform: translate3d(var(--drift), -35px, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(var(--drift) * -0.25), -68px, 0);
+  }
+}
+
+/* Motes belong to daylight only. */
+.dashboard-page .dashboard-motes {
+  opacity: 0;
+}
+
+[data-theme="light"] .dashboard-page .dashboard-motes {
+  opacity: 1;
+}
+
+/* ---------------- BOTH MODES: LEAVES ---------------- */
+
+.dashboard-page .dashboard-leaf {
+  left: var(--x);
+  top: -24px;
+
+  width: 8px;
+  height: 5px;
+
+  background: #648f32;
+  border: 1px solid #35551f;
+
+  border-radius: 70% 10% 70% 10%;
+
+  opacity: 0.72;
+
+  animation:
+    dashboard-leaf-fall var(--duration) linear var(--delay) infinite;
+}
+
+@keyframes dashboard-leaf-fall {
+  0% {
+    transform: translate3d(0, -30px, 0) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.72;
+  }
+  45% {
+    transform: translate3d(var(--sway), 48vh, 0) rotate(180deg);
+  }
+  100% {
+    transform: translate3d(calc(var(--sway) * -0.55), 108vh, 0) rotate(420deg);
+    opacity: 0;
+  }
+}
+
+[data-theme="light"] .dashboard-page .dashboard-leaf {
+  background: #79a83c;
+  border-color: #466a25;
+  opacity: 0.62;
+}
+
+/*
+ * Keep ambient effects visible BETWEEN panels without washing
+ * out the actual dashboard UI.
+ */
+.dashboard-page .dashboard-parallax-vignette {
+  z-index: 6;
+}
+
+/* Reduced motion = living scenery remains visible, but stationary. */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-page .dashboard-firefly,
+  .dashboard-page .dashboard-mote,
+  .dashboard-page .dashboard-leaf {
+    animation: none !important;
+  }
+
+  .dashboard-page .dashboard-firefly {
+    opacity: 0.35;
+  }
+
+  [data-theme="light"] .dashboard-page .dashboard-firefly {
+    opacity: 0;
+  }
+
+  [data-theme="light"] .dashboard-page .dashboard-mote {
+    opacity: 0.26;
+  }
+}
+
+
 /* =========================================================
    COURSES — RPG ASSET COMPOSITION
    courses-panel + search placeholder + difficulty buttons
@@ -2041,55 +2388,320 @@ body {
   color: var(--bg-color) !important;
   border-color: var(--primary-color) !important;
 }
-.feature-section {
+/* =========================================================
+   DASHBOARD PRACTICE + COMMUNITY — COMPLETE ASSET COMPOSITION
+   ========================================================= */
 
-  margin-top: 100px;
+.dashboard-page .dashboard-feature-hub {
+  width: min(94vw, 1540px);
+  margin: 40px auto 58px;
 
-  padding: 0 60px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.dashboard-page .dashboard-feature-panel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+
+  isolation: isolate;
+  overflow: hidden;
+
+  image-rendering: pixelated;
+}
+
+/* Unique illustration behind each panel's transparent left opening. */
+.dashboard-page .feature-scene {
+  position: absolute;
+  z-index: 1;
+
+  left: 5.3%;
+  top: 17%;
+  width: 44.4%;
+  height: 72.2%;
+
+  overflow: hidden;
+
+  background-repeat: no-repeat;
+  background-size: cover;
+  image-rendering: pixelated;
+}
+
+.dashboard-page .feature-scene-practice {
+  background-image: url("assets/practice-background.png");
+  background-position: 42% center;
+}
+
+.dashboard-page .feature-scene-community {
+  background-image: url("assets/community-background.png");
+  background-position: 48% center;
+}
+
+/* The wooden frame is deliberately ABOVE the illustration. */
+.dashboard-page .dashboard-feature-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+
+  pointer-events: none;
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+  image-rendering: pixelated;
+}
+
+.dashboard-page .practice-feature::after {
+  background-image: url("assets/practice-panel.png");
+}
+
+.dashboard-page .community-feature::after {
+  background-image: url("assets/community-panel.png");
+}
+
+/* Right-side parchment/content stays above the panel artwork. */
+.dashboard-page .feature-copy-card {
+  position: absolute;
+  z-index: 3;
+
+  left: 51.4%;
+  right: 4.7%;
+  top: 17.4%;
+  bottom: 8.2%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  min-width: 0;
+}
+
+.dashboard-page .feature-parchment {
+  position: relative;
+
+  width: 86%;
+  height: 79%;
+
+  background:
+    transparent
+    url("assets/practice-community-description.png")
+    center / 100% 100%
+    no-repeat;
+
+  image-rendering: pixelated;
+}
+
+.dashboard-page .feature-parchment-copy {
+  position: absolute;
+  inset: 12% 12% 11%;
 
   display: flex;
   flex-direction: column;
 
-  gap: 120px;
-
-  max-width: 1600px;
-
-  margin-left: auto;
-  margin-right: auto;
+  color: #3a2417;
+  text-shadow: none;
 }
 
-.feature-box {
+.dashboard-page .feature-parchment-copy h2 {
+  margin: 0 0 8px;
+
+  color: #342014;
+  font-size: clamp(12px, 1vw, 18px);
+  font-weight: normal;
+  line-height: 1.35;
+  text-shadow: none;
+}
+
+.dashboard-page .feature-parchment-copy p {
+  margin: 0 0 13px;
+
+  color: #4b3322;
+  font-size: clamp(8px, 0.62vw, 11px);
+  line-height: 1.55;
+  text-shadow: none;
+}
+
+.dashboard-page .feature-benefits {
+  display: grid;
+  gap: 9px;
+
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dashboard-page .feature-benefits li {
+  position: relative;
+  padding-left: 18px;
+
+  color: #3d291b;
+  font-size: clamp(8px, 0.66vw, 11px);
+  line-height: 1.35;
+  text-shadow: none;
+}
+
+.dashboard-page .feature-benefits li::before {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: 50%;
+
+  width: 7px;
+  height: 7px;
+
+  transform: translateY(-50%) rotate(45deg);
+  background: #6f8f35;
+  border: 1px solid #3f5221;
+}
+
+.dashboard-page .feature-rpg-button {
+  position: relative;
+
+  width: 88%;
+  height: 21%;
+  min-height: 44px;
+
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 100px;
-}
-.feature-box div {
-  max-width: 500px;
+  justify-content: center;
+  gap: 12px;
+
+  margin-top: -1%;
+  padding: 3px 26px 0;
+  box-sizing: border-box;
+
+  background:
+    transparent
+    url("assets/practice-community-button.png")
+    center / 100% 100%
+    no-repeat;
+
+  color: #f7edc7;
+  font-family: 'Minecraft', monospace;
+  font-size: clamp(9px, 0.75vw, 13px);
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 1px 1px 0 #1e3217;
+
+  image-rendering: pixelated;
 }
 
-.feature-box.reverse {
-  flex-direction: row-reverse;
+.dashboard-page .feature-rpg-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
 }
 
-.feature-box img {
-  width: 420px;
-  border-radius: var(--border-radius);
-  border: 4px solid var(--primary-color);
-  box-shadow: 8px 8px 0 var(--shadow-color);
+.dashboard-page .feature-rpg-button:active {
+  transform: translateY(2px);
+  filter: brightness(0.94);
 }
 
-.feature-box h2 {
-  font-size: 40px;
-  margin-bottom: 15px;
-  color: var(--primary-color);
-  text-shadow: var(--text-shadow-glow);
+.dashboard-page .feature-rpg-button:focus-visible {
+  outline: 2px solid #f0d67c;
+  outline-offset: 1px;
 }
 
-.feature-box p {
-  color: var(--muted-color);
-  line-height: 1.7;
+.dashboard-page .feature-button-arrow {
+  display: inline-block;
+  margin-top: -2px;
+  font-size: 1.45em;
+  line-height: 1;
 }
+
+@media (max-width: 1050px) {
+  .dashboard-page .dashboard-feature-hub {
+    width: min(92vw, 768px);
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .dashboard-page .feature-parchment-copy h2 {
+    font-size: clamp(13px, 2vw, 18px);
+  }
+
+  .dashboard-page .feature-parchment-copy p,
+  .dashboard-page .feature-benefits li {
+    font-size: clamp(8px, 1.15vw, 11px);
+  }
+
+  .dashboard-page .feature-rpg-button {
+    font-size: clamp(9px, 1.35vw, 13px);
+  }
+}
+
+@media (max-width: 560px) {
+  .dashboard-page .dashboard-feature-hub {
+    width: calc(100% - 8px);
+    padding: 0;
+  }
+
+  .dashboard-page .dashboard-feature-panel {
+    min-height: 390px;
+    aspect-ratio: auto;
+  }
+
+  .dashboard-page .feature-scene {
+    left: 5.3%;
+    top: 17%;
+    width: 44.4%;
+    height: 72%;
+  }
+
+  .dashboard-page .feature-copy-card {
+    left: 51%;
+    right: 4.5%;
+    top: 17%;
+    bottom: 8%;
+  }
+
+  .dashboard-page .feature-parchment-copy {
+    inset: 11% 10% 10%;
+  }
+
+  .dashboard-page .feature-parchment-copy h2 {
+    margin-bottom: 5px;
+    font-size: 10px;
+  }
+
+  .dashboard-page .feature-parchment-copy p {
+    margin-bottom: 7px;
+    font-size: 6.5px;
+    line-height: 1.45;
+  }
+
+  .dashboard-page .feature-benefits {
+    gap: 5px;
+  }
+
+  .dashboard-page .feature-benefits li {
+    padding-left: 12px;
+    font-size: 6.5px;
+  }
+
+  .dashboard-page .feature-benefits li::before {
+    width: 5px;
+    height: 5px;
+  }
+
+  .dashboard-page .feature-rpg-button {
+    min-height: 34px;
+    padding-inline: 12px;
+    font-size: 7px;
+  }
+}
+
+
+
 /* ===== LEARNING PATH SECTION ===== */
 
 .learning-section {
