@@ -4790,7 +4790,9 @@ textarea {
 
 .dashboard-page .profile-pic {
   display: block;
-
+  transform: translate(-5px, 0px);
+  border: 4px solid #1e110a;
+  
   width: 104px;
   height: 104px;
   margin: 0;
@@ -4854,7 +4856,7 @@ textarea {
 
 .dashboard-page .player-xp {
   width: min(100%, 350px);
-  margin: 0 auto;
+  margin: -20 auto;
 
   display: flex;
   flex-direction: column;
@@ -4862,16 +4864,22 @@ textarea {
 }
 
 .dashboard-page .player-xp-label {
-  margin: 0 0 -4px 13px;
+  margin: 0 0 -20px 13px;
 
   color: #4a2d1c;
-
+  
   font-size: 10px;
   line-height: 1.2;
-  text-align: left;
+  text-align: center;
   text-shadow: none;
 
   z-index: 2;
+}
+.dashboard-player-xp-count {
+  margin: 0px;
+  padding: 0px;
+  text-align: center;
+  transform: translate(0px, -10px);
 }
 
 .dashboard-page .xp-meter {
@@ -4898,7 +4906,7 @@ textarea {
   right: 10.8%;
   top: 47.5%;
   height: 9.5%;
-
+  padding: -100px;
   overflow: hidden;
   background: #20160f;
 }

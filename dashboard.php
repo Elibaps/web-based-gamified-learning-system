@@ -79,8 +79,6 @@ include 'includes/head.php';
 
 <!-- LIVING DASHBOARD BACKGROUND -->
 <div class="dashboard-parallax" aria-hidden="true">
-    <div class="dashboard-parallax-layer dashboard-parallax-far"></div>
-    <div class="dashboard-parallax-layer dashboard-parallax-mid"></div>
     <div class="dashboard-parallax-layer dashboard-parallax-near"></div>
 
     <div class="dashboard-particles dashboard-fireflies"></div>
@@ -119,7 +117,7 @@ include 'includes/head.php';
                     </div>
                 </div>
 
-                <small><?php echo $exp; ?> / <?php echo $expNeeded; ?> XP</small>
+                <small class="dashboard-player-xp-count"><?php echo $exp; ?> / <?php echo $expNeeded; ?> XP</small>
             </div>
 
         </div>
