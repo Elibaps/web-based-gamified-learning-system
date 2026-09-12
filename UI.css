@@ -1192,9 +1192,9 @@ body {
   background: #f4f27a;
 
   box-shadow:
-    0 0 4px #f6f57d,
-    0 0 9px rgba(223, 242, 91, 0.82),
-    0 0 16px rgba(158, 220, 75, 0.44);
+    0 0 6px #f4f27a,
+    0 0 12px rgba(223, 242, 91, 0.88),
+    0 0 22px rgba(158, 220, 75, 0.52);
 
   opacity: 0;
 
@@ -1205,24 +1205,24 @@ body {
 
 @keyframes dashboard-firefly-float {
   0% {
-    transform: translate3d(0, 18px, 0);
+    transform: translate3d(0, 24px, 0);
   }
   35% {
-    transform: translate3d(var(--drift), -12px, 0);
+    transform: translate3d(var(--drift), -16px, 0);
   }
   70% {
-    transform: translate3d(calc(var(--drift) * -0.45), -30px, 0);
+    transform: translate3d(calc(var(--drift) * -0.45), -40px, 0);
   }
   100% {
-    transform: translate3d(0, 18px, 0);
+    transform: translate3d(0, 24px, 0);
   }
 }
 
 @keyframes dashboard-firefly-glow {
-  0%, 100% { opacity: 0.12; }
+  0%, 100% { opacity: 0.18; }
   30%      { opacity: 0.95; }
-  55%      { opacity: 0.35; }
-  78%      { opacity: 0.80; }
+  55%      { opacity: 0.45; }
+  78%      { opacity: 0.85; }
 }
 
 /* Hide fireflies during daytime. */
@@ -1242,7 +1242,7 @@ body {
   border-radius: 50%;
   background: rgba(255, 245, 190, 0.92);
 
-  box-shadow: 0 0 4px rgba(255, 246, 186, 0.45);
+  box-shadow: 0 0 5px rgba(255, 246, 186, 0.55);
 
   opacity: 0;
 
@@ -1256,15 +1256,15 @@ body {
     transform: translate3d(0, 28px, 0);
   }
   15% {
-    opacity: 0.55;
+    opacity: 0.65;
   }
   65% {
-    opacity: 0.34;
-    transform: translate3d(var(--drift), -35px, 0);
+    opacity: 0.42;
+    transform: translate3d(var(--drift), -42px, 0);
   }
   100% {
     opacity: 0;
-    transform: translate3d(calc(var(--drift) * -0.25), -68px, 0);
+    transform: translate3d(calc(var(--drift) * -0.25), -75px, 0);
   }
 }
 
@@ -1283,15 +1283,15 @@ body {
   left: var(--x);
   top: -24px;
 
-  width: 8px;
-  height: 5px;
+  width: 10px;
+  height: 6px;
 
-  background: #648f32;
+  background: #6a9734;
   border: 1px solid #35551f;
 
   border-radius: 70% 10% 70% 10%;
 
-  opacity: 0.72;
+  opacity: 0.82;
 
   animation:
     dashboard-leaf-fall var(--duration) linear var(--delay) infinite;
@@ -1303,21 +1303,21 @@ body {
     opacity: 0;
   }
   8% {
-    opacity: 0.72;
+    opacity: 0.82;
   }
   45% {
-    transform: translate3d(var(--sway), 48vh, 0) rotate(180deg);
+    transform: translate3d(var(--sway), 55vh, 0) rotate(180deg);
   }
   100% {
-    transform: translate3d(calc(var(--sway) * -0.55), 108vh, 0) rotate(420deg);
+    transform: translate3d(calc(var(--sway) * -0.55), 115vh, 0) rotate(420deg);
     opacity: 0;
   }
 }
 
 [data-theme="light"] .dashboard-page .dashboard-leaf {
-  background: #79a83c;
+  background: #82b240;
   border-color: #466a25;
-  opacity: 0.62;
+  opacity: 0.74;
 }
 
 /*
@@ -1797,7 +1797,7 @@ body {
   box-sizing: border-box;
   display: flex;
   align-items: flex-start;
-  padding: 0 126px 0 174px;
+  padding: 0 103px 0 174px;
   color: #f5dfad;
   background-color: transparent;
   background-image: url("assets/top-nav-bar-middle.png");
@@ -2052,12 +2052,37 @@ body {
   font-size: 10px;
 }
 
-.profile-dropdown a:hover {
-  background: #496b22;
-  color: #f7f0c7;
+.profile-menu:hover .profile-dropdown {
+  display: flex;
+  animation: dropdownFade 0.15s ease;
 }
 
-.profile-menu:hover .profile-dropdown {
+/* House artwork (top-nav-bar-right.png) is now the account menu trigger.
+   The PNG itself is untouched; this invisible hotspot plus the dropdown
+   overlay sit on top of it. */
+.house-menu {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 108px;
+  height: 110px;
+  z-index: 5;
+}
+
+.house-trigger {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+}
+
+.house-menu:hover .profile-dropdown,
+.house-menu.is-open .profile-dropdown {
   display: flex;
   animation: dropdownFade 0.15s ease;
 }
@@ -2151,6 +2176,11 @@ body {
     height: 26px;
     font-size: 9px;
   }
+
+  .house-menu {
+    width: 43px;
+    height: 44px;
+  }
 }
 
 /* ACTIVE FILTER CHIP */
@@ -2173,6 +2203,20 @@ body {
 
   padding: 0 10px;
   box-sizing: border-box;
+}
+
+/* Each feature = framed panel + CTA button OUTSIDE/below the frame. */
+.dashboard-page .feature-card-wrap {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.dashboard-page .feature-card-wrap .dashboard-feature-panel {
+  width: 100%;
 }
 
 .dashboard-page .dashboard-feature-panel {
@@ -2244,8 +2288,8 @@ body {
 
   left: 51.4%;
   right: 4.7%;
-  top: 17.4%;
-  bottom: 8.2%;
+  top: 10%;
+  bottom: 10%;
 
   display: flex;
   flex-direction: column;
@@ -2260,7 +2304,7 @@ body {
   position: relative;
 
   width: 86%;
-  height: 79%;
+  height: 84%;
 
   background:
     transparent
@@ -2273,7 +2317,7 @@ body {
 
 .dashboard-page .feature-parchment-copy {
   position: absolute;
-  inset: 12% 12% 11%;
+  inset: 11% 12% 10%;
 
   display: flex;
   flex-direction: column;
@@ -2337,8 +2381,12 @@ body {
 .dashboard-page .feature-rpg-button {
   position: relative;
 
-  width: 88%;
-  height: 21%;
+  align-self: center;
+
+  margin-top: -20px;
+
+  width: 38.6%;
+  aspect-ratio: 100 / 27;
   min-height: 44px;
 
   display: flex;
@@ -2346,7 +2394,6 @@ body {
   justify-content: center;
   gap: 12px;
 
-  margin-top: -1%;
   padding: 3px 26px 0;
   box-sizing: border-box;
 
@@ -4232,7 +4279,7 @@ textarea {
   image-rendering: pixelated;
 }
 
-.dashboard-page .leaderboard-list {
+.dashboard-page .mini-leaderboard .leaderboard-list {
   display: grid;
   grid-template-rows: repeat(5, minmax(39px, 1fr));
 
@@ -4240,9 +4287,9 @@ textarea {
   min-height: 210px;
 }
 
-.dashboard-page .leader {
+.dashboard-page .mini-leaderboard .leader {
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr) 68px;
+  grid-template-columns: 40px 38px minmax(0, 1fr) 68px;
   align-items: center;
   gap: 11px;
 
@@ -4262,11 +4309,11 @@ textarea {
   overflow: visible;
 }
 
-.dashboard-page .leader:last-child {
+.dashboard-page .mini-leaderboard .leader:last-child {
   border-bottom: 0;
 }
 
-.dashboard-page .leader-rank {
+.dashboard-page .mini-leaderboard .leader-rank {
   width: 38px;
   height: 38px;
 
@@ -4280,7 +4327,7 @@ textarea {
   line-height: 1;
 }
 
-.dashboard-page .leader-rank img {
+.dashboard-page .mini-leaderboard .leader-rank img {
   display: block;
 
   width: 37px;
@@ -4290,8 +4337,26 @@ textarea {
   image-rendering: pixelated;
 }
 
-.dashboard-page .leader-name,
-.dashboard-page .leader-level {
+.dashboard-page .mini-leaderboard .leader-avatar {
+  display: block;
+
+  width: 38px;
+  height: 38px;
+
+  object-fit: cover;
+  image-rendering: pixelated;
+
+  border-radius: 0;
+
+  box-sizing: border-box;
+  border: 2px solid #2b1a0d;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.28)),
+    #1a100a;
+}
+
+.dashboard-page .mini-leaderboard .leader-name,
+.dashboard-page .mini-leaderboard .leader-level {
   display: flex;
   align-items: center;
 
@@ -4303,7 +4368,7 @@ textarea {
   line-height: 1.45;
 }
 
-.dashboard-page .leader-name {
+.dashboard-page .mini-leaderboard .leader-name {
   min-width: 0;
 
   white-space: nowrap;
@@ -4311,14 +4376,14 @@ textarea {
   text-overflow: ellipsis;
 }
 
-.dashboard-page .leader-level {
+.dashboard-page .mini-leaderboard .leader-level {
   justify-content: flex-end;
 
   color: #b8d66c;
   white-space: nowrap;
 }
 
-.dashboard-page .leaderboard-view-button {
+.dashboard-page .mini-leaderboard .leaderboard-view-button {
   position: absolute;
   left: 50%;
   bottom: 11px;
@@ -4349,14 +4414,399 @@ textarea {
   image-rendering: pixelated;
 }
 
-.dashboard-page .leaderboard-view-button:hover {
+.dashboard-page .mini-leaderboard .leaderboard-view-button:hover {
   transform: translate(-50%, -2px);
   filter: brightness(1.08);
 }
 
-.dashboard-page .leaderboard-view-button:active {
+.dashboard-page .mini-leaderboard .leaderboard-view-button:active {
   transform: translate(-50%, 1px);
   filter: brightness(0.95);
+}
+
+/* =========================================================
+   LEADERBOARD PAGE (leaderboardlist.php)
+   Enlarged version of the Top Players board. The 360x272
+   leaderboard-panel.png is scaled proportionally; the interior
+   padding mirrors the dashboard mini board's proportions.
+   ========================================================= */
+
+.leaderboard-page {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+
+  padding: clamp(30px, 5vw, 64px) 16px 48px;
+  box-sizing: border-box;
+}
+
+.leaderboard-page .leaderboard-board {
+  position: relative;
+
+  width: min(94vw, 900px);
+
+  margin: 0 auto;
+  box-sizing: border-box;
+  aspect-ratio: 360 / 272;
+
+  background:
+    transparent
+    url("assets/leaderboard-panel.png")
+    center / 100% 100%
+    no-repeat;
+
+  image-rendering: pixelated;
+}
+
+.leaderboard-page .leaderboard-list {
+  position: absolute;
+  left: 7.7%;
+  right: 7.7%;
+  top: 24%;
+  bottom: 17%;
+
+  height: auto;
+
+  display: grid;
+  grid-auto-rows: 56px;
+  gap: 4px;
+
+  min-height: 0;
+  overflow-y: auto;
+  align-content: start;
+}
+
+.leaderboard-page .lb-row {
+  display: grid;
+  grid-template-columns: 52px 44px minmax(0, 1fr) 92px;
+  align-items: center;
+  gap: 14px;
+
+  padding: 5px 10px;
+  box-sizing: border-box;
+
+  border-bottom: 1px solid rgba(144, 81, 37, 0.30);
+
+  color: #f3e7c5;
+
+  font-size: 14px;
+  line-height: 1.5;
+  text-shadow: 1px 1px 0 #1e110a;
+}
+
+.leaderboard-page .lb-row:last-child {
+  border-bottom: 0;
+}
+
+.leaderboard-page .lb-row:nth-child(even) {
+  background: rgba(36, 19, 10, 0.20);
+}
+
+/* Understated pixel-metal highlights for the podium rows.
+   Applied to the whole row, medals stay untouched. */
+.leaderboard-page .lb-row.rank-1 {
+  background: rgba(88, 68, 18, 0.24);
+  box-shadow: inset 0 0 0 2px rgba(199, 155, 42, 0.58);
+}
+
+.leaderboard-page .lb-row.rank-2 {
+  background: rgba(70, 74, 84, 0.22);
+  box-shadow: inset 0 0 0 2px rgba(178, 188, 204, 0.52);
+}
+
+.leaderboard-page .lb-row.rank-3 {
+  background: rgba(84, 56, 32, 0.24);
+  box-shadow: inset 0 0 0 2px rgba(180, 112, 52, 0.52);
+}
+
+.leaderboard-page .lb-row:hover {
+  background: rgba(73, 107, 34, 0.26);
+}
+
+/* Subtle pixel-art highlight for the logged-in user's row. */
+.leaderboard-page .lb-row.is-me {
+  background: rgba(56, 32, 15, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(211, 162, 68, 0.55);
+}
+
+.leaderboard-page .lb-rank {
+  width: 48px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #f7d67c;
+
+  font-size: 15px;
+  line-height: 1;
+}
+
+.leaderboard-page .lb-rank img {
+  display: block;
+
+  width: 46px;
+  height: 44px;
+
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.leaderboard-page .lb-avatar {
+  display: block;
+
+  width: 44px;
+  height: 44px;
+
+  object-fit: cover;
+  image-rendering: pixelated;
+
+  border-radius: 0;
+
+  box-sizing: border-box;
+  border: 2px solid #2b1a0d;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.28)),
+    #1a100a;
+}
+
+.leaderboard-page .lb-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  min-width: 0;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leaderboard-page .lb-you {
+  flex: none;
+
+  padding: 1px 5px 2px;
+  box-sizing: border-box;
+
+  background: #33520f;
+  border: 1px solid #1c2e06;
+
+  color: #f4efc9;
+
+  font-size: 9px;
+  line-height: 1.2;
+  text-shadow: 1px 1px 0 #1f3a05;
+}
+
+.leaderboard-page .lb-level {
+  justify-self: end;
+
+  color: #b8d66c;
+  white-space: nowrap;
+
+  font-size: 13px;
+}
+
+.leaderboard-page .lb-empty {
+  position: absolute;
+  left: 7.7%;
+  right: 7.7%;
+  top: 24%;
+  bottom: 17%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0;
+
+  color: #f3e7c5;
+
+  font-size: clamp(14px, 2vw, 18px);
+  text-shadow: 1px 1px 0 #1e110a;
+}
+
+/* Wooden plank button (courses-difficulty-button.png) reused for
+   PREVIOUS / NEXT / BACK TO DASHBOARD. */
+.leaderboard-page .lb-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: clamp(150px, 20vw, 210px);
+  aspect-ratio: 326 / 109;
+
+  box-sizing: border-box;
+
+  background:
+    transparent
+    url("assets/courses-difficulty-button.png")
+    center / 100% 100%
+    no-repeat;
+
+  color: #f6e6b5;
+
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 1px 1px 0 #2f190c;
+
+  image-rendering: pixelated;
+}
+
+.leaderboard-page .lb-btn:not(.is-disabled):hover {
+  filter: brightness(1.06);
+}
+
+.leaderboard-page .lb-btn:not(.is-disabled):active {
+  filter: brightness(0.94);
+}
+
+.leaderboard-page .lb-btn.is-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.leaderboard-page .lb-pagination {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 3.2%;
+
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+}
+
+.leaderboard-page .lb-back {
+  width: clamp(190px, 24vw, 250px);
+
+  margin: 26px auto 0;
+}
+
+@media (max-width: 760px) {
+  .leaderboard-page {
+    padding: 30px 10px 40px;
+  }
+
+  .leaderboard-page .leaderboard-board {
+    width: min(96vw, 900px);
+  }
+
+  .leaderboard-page .leaderboard-list {
+    grid-auto-rows: 48px;
+    gap: 3px;
+  }
+
+  .leaderboard-page .lb-row {
+    grid-template-columns: 44px 36px minmax(0, 1fr) 62px;
+    gap: 10px;
+
+    padding: 4px 8px;
+
+    font-size: 12px;
+  }
+
+  .leaderboard-page .lb-rank {
+    width: 42px;
+    height: 38px;
+
+    font-size: 13px;
+  }
+
+  .leaderboard-page .lb-rank img {
+    width: 40px;
+    height: 38px;
+  }
+
+  .leaderboard-page .lb-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .leaderboard-page .lb-you {
+    font-size: 8px;
+    padding: 1px 4px 2px;
+  }
+
+  .leaderboard-page .lb-level {
+    font-size: 11px;
+  }
+
+  .leaderboard-page .lb-pagination {
+    bottom: 1.6%;
+    gap: 14px;
+  }
+
+  .leaderboard-page .lb-btn {
+    width: clamp(118px, 30vw, 180px);
+    font-size: 11px;
+  }
+
+  .leaderboard-page .lb-back {
+    width: clamp(150px, 40vw, 220px);
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .leaderboard-page .leaderboard-board {
+    width: 98vw;
+  }
+
+  .leaderboard-page .lb-row {
+    grid-template-columns: 40px 34px minmax(0, 1fr) 54px;
+    gap: 8px;
+
+    font-size: 11px;
+  }
+
+  .leaderboard-page .lb-rank {
+    width: 38px;
+    height: 34px;
+
+    font-size: 11px;
+  }
+
+  .leaderboard-page .lb-rank img {
+    width: 34px;
+    height: 32px;
+  }
+
+  .leaderboard-page .leaderboard-list {
+    grid-auto-rows: 42px;
+    gap: 2px;
+  }
+
+  .leaderboard-page .lb-avatar {
+    width: 32px;
+    height: 32px;
+
+    border-width: 1px;
+  }
+
+  .leaderboard-page .lb-level {
+    font-size: 10px;
+  }
+
+  .leaderboard-page .lb-pagination {
+    bottom: 1.6%;
+    gap: 10px;
+  }
+
+  .leaderboard-page .lb-btn {
+    width: clamp(90px, 26vw, 130px);
+    font-size: 10px;
+  }
+
+  .leaderboard-page .lb-back {
+    width: clamp(120px, 34vw, 180px);
+  }
 }
 
 /* =========================================================
@@ -4680,12 +5130,13 @@ textarea {
   position: relative;
 
   width: 100%;
-  min-height: 118px;
+  min-height: 180px;
 
   display: flex;
   align-items: center;
+  justify-content: center;
 
-  padding: 24px 52px;
+  padding: 20px 48px;
   box-sizing: border-box;
 
   background:
@@ -4706,7 +5157,7 @@ textarea {
   font-size: clamp(10px, 0.92vw, 15px);
   line-height: 1.65;
 
-  text-align: left;
+  text-align: center;
   text-shadow: none;
 }
 
@@ -4749,7 +5200,7 @@ textarea {
   }
 
   .dashboard-page .daily-trivia-title {
-    margin-left: 3%;
+    margin-left: 0%;
     font-size: 11px;
   }
 

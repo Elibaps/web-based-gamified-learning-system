@@ -140,6 +140,12 @@ include 'includes/head.php';
                         <?php endif; ?>
                     </div>
 
+                    <img
+                        src="assets/player.png"
+                        class="leader-avatar"
+                        alt="Avatar of <?php echo htmlspecialchars($leader['username'], ENT_QUOTES, 'UTF-8'); ?>"
+                    >
+
                     <span class="leader-name">
                         <?php echo htmlspecialchars($leader['username'], ENT_QUOTES, 'UTF-8'); ?>
                     </span>
@@ -151,7 +157,7 @@ include 'includes/head.php';
             <?php endforeach; ?>
         </div>
 
-        <a class="leaderboard-view-button" href="leaderboard.php"></a>
+        <a class="leaderboard-view-button" href="leaderboardlist.php"></a>
     </section>
 
     <nav class="top-actions" aria-label="Dashboard actions">
@@ -371,51 +377,55 @@ include 'includes/head.php';
 <!-- PRACTICE + COMMUNITY -->
 <section class="dashboard-feature-hub" aria-label="Practice and community">
 
-  <article class="dashboard-feature-panel practice-feature">
-    <div class="feature-scene feature-scene-practice" aria-hidden="true"></div>
-    <div class="feature-copy-card">
-      <div class="feature-parchment">
-        <div class="feature-parchment-copy">
-          <h2>Practice your coding chops</h2>
-          <p>Sharpen your skills with coding battles, quizzes, and hands-on challenges.</p>
+  <div class="feature-card-wrap">
+    <article class="dashboard-feature-panel practice-feature">
+      <div class="feature-scene feature-scene-practice" aria-hidden="true"></div>
+      <div class="feature-copy-card">
+        <div class="feature-parchment">
+          <div class="feature-parchment-copy">
+            <h2>Practice your coding chops</h2>
+            <p>Sharpen your skills with coding battles, quizzes, and hands-on challenges.</p>
 
-          <ul class="feature-benefits">
-            <li>Coding Challenges</li>
-            <li>Timed Exercises</li>
-            <li>Earn XP &amp; Rewards</li>
-          </ul>
+            <ul class="feature-benefits">
+              <li>Coding Challenges</li>
+              <li>Timed Exercises</li>
+              <li>Earn XP &amp; Rewards</li>
+            </ul>
+          </div>
         </div>
       </div>
+    </article>
 
-      <a class="feature-rpg-button" href="practice.php">
-        <span>GO TO PRACTICE</span>
-        <span class="feature-button-arrow" aria-hidden="true">›</span>
-      </a>
-    </div>
-  </article>
+    <a class="feature-rpg-button" href="practice.php">
+      <span>GO TO PRACTICE</span>
+      <span class="feature-button-arrow" aria-hidden="true">›</span>
+    </a>
+  </div>
 
-  <article class="dashboard-feature-panel community-feature">
-    <div class="feature-scene feature-scene-community" aria-hidden="true"></div>
-    <div class="feature-copy-card">
-      <div class="feature-parchment">
-        <div class="feature-parchment-copy">
-          <h2>Join a coding community</h2>
-          <p>Connect with other learners, share ideas, and compare your progress.</p>
+  <div class="feature-card-wrap">
+    <article class="dashboard-feature-panel community-feature">
+      <div class="feature-scene feature-scene-community" aria-hidden="true"></div>
+      <div class="feature-copy-card">
+        <div class="feature-parchment">
+          <div class="feature-parchment-copy">
+            <h2>Join a coding community</h2>
+            <p>Connect with other learners, share ideas, and compare your progress.</p>
 
-          <ul class="feature-benefits">
-            <li>Discuss &amp; Share</li>
-            <li>Leaderboard Progress</li>
-            <li>Connect with Learners</li>
-          </ul>
+            <ul class="feature-benefits">
+              <li>Discuss &amp; Share</li>
+              <li>Leaderboard Progress</li>
+              <li>Connect with Learners</li>
+            </ul>
+          </div>
         </div>
       </div>
+    </article>
 
-      <a class="feature-rpg-button" href="community.php">
-        <span>GO TO COMMUNITY</span>
-        <span class="feature-button-arrow" aria-hidden="true">›</span>
-      </a>
-    </div>
-  </article>
+    <a class="feature-rpg-button" href="community.php">
+      <span>GO TO COMMUNITY</span>
+      <span class="feature-button-arrow" aria-hidden="true">›</span>
+    </a>
+  </div>
 
 </section>
 
@@ -498,9 +508,9 @@ document.addEventListener("DOMContentLoaded", function () {
             particle.style.setProperty("--x", `${(Math.random() * 100).toFixed(2)}%`);
             particle.style.setProperty("--y", `${(Math.random() * 100).toFixed(2)}%`);
             particle.style.setProperty("--delay", `${(-Math.random() * 8).toFixed(2)}s`);
-            particle.style.setProperty("--duration", `${(4.8 + Math.random() * 5.8).toFixed(2)}s`);
-            particle.style.setProperty("--drift", `${(-30 + Math.random() * 60).toFixed(1)}px`);
-            particle.style.setProperty("--size", `${(2 + Math.random() * 4).toFixed(1)}px`);
+            particle.style.setProperty("--duration", `${(5.2 + Math.random() * 5.8).toFixed(2)}s`);
+            particle.style.setProperty("--drift", `${(-38 + Math.random() * 76).toFixed(1)}px`);
+            particle.style.setProperty("--size", `${(2 + Math.random() * 5).toFixed(1)}px`);
 
             host.appendChild(particle);
         }
@@ -515,8 +525,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             leaf.style.setProperty("--x", `${(Math.random() * 100).toFixed(2)}%`);
             leaf.style.setProperty("--delay", `${(-Math.random() * 15).toFixed(2)}s`);
-            leaf.style.setProperty("--duration", `${(9.5 + Math.random() * 8).toFixed(2)}s`);
-            leaf.style.setProperty("--sway", `${(40 + Math.random() * 82).toFixed(1)}px`);
+            leaf.style.setProperty("--duration", `${(10 + Math.random() * 8).toFixed(2)}s`);
+            leaf.style.setProperty("--sway", `${(50 + Math.random() * 85).toFixed(1)}px`);
 
             host.appendChild(leaf);
         }

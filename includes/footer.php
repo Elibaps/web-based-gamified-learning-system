@@ -32,6 +32,32 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+/* ── House Account Menu (hover via CSS, click/tap via class toggle) ── */
+document.addEventListener("DOMContentLoaded", function() {
+    const menu = document.getElementById("houseMenu");
+    if (!menu) return;
+    const trigger = menu.querySelector(".house-trigger");
+
+    function setOpen(open) {
+        menu.classList.toggle("is-open", open);
+        if (trigger) trigger.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+
+    if (trigger) {
+        trigger.addEventListener("click", function(e) {
+            e.stopPropagation();
+            setOpen(menu.classList.contains("is-open") ? false : true);
+        });
+    }
+
+    document.addEventListener("click", function(e) {
+        if (!menu.contains(e.target)) setOpen(false);
+    });
+
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") setOpen(false);
+    });
+});
 </script>
 </body>
 </html>

@@ -43,18 +43,14 @@ $navAvatarExists = file_exists(__DIR__ . '/../images/player.png');
     <div class="profile-menu">
       <button id="themeToggleBtn" class="theme-toggle-btn" type="button" aria-label="Toggle theme">🌞</button>
     </div>
+  </div>
 
-    <div class="profile-menu">
-      <?php if ($navAvatarExists): ?>
-        <img src="images/player.png" class="nav-avatar" alt="Profile Avatar">
-      <?php else: ?>
-        <span class="nav-avatar" aria-label="Profile avatar"><?php echo htmlspecialchars($navInitial, ENT_QUOTES, 'UTF-8'); ?></span>
-      <?php endif; ?>
-      <div class="profile-dropdown">
-        <a href="profile.php">My Profile</a>
-        <a href="settings.php">Settings</a>
-        <a href="logout.php">Logout</a>
-      </div>
+  <div class="house-menu" id="houseMenu">
+    <button class="house-trigger" type="button" aria-label="Account menu" aria-haspopup="true" aria-expanded="false"></button>
+    <div class="profile-dropdown">
+      <a href="profile.php">My Profile</a>
+      <a href="settings.php">Settings</a>
+      <a href="logout.php">Logout</a>
     </div>
   </div>
 </div>
