@@ -156,41 +156,45 @@ include 'includes/head.php';
 
     <nav class="top-actions" aria-label="Dashboard actions">
 
-        <a class="dashboard-action learning-path-action"
-           href="learning_path.php?path_id=1">
-            <img src="assets/learningpath-icon.png"
-                 class="dashboard-action-icon"
-                 alt=""
-                 aria-hidden="true">
-            <span>LEARNING PATH</span>
-        </a>
+        <div class="top-actions-inner">
 
-        <a class="dashboard-action matchmaking-action"
-           href="pvp.php">
-            <img src="assets/matchmaking-icon.png"
-                 class="dashboard-action-icon"
-                 alt=""
-                 aria-hidden="true">
-            <span>MATCHMAKING</span>
-        </a>
+            <a class="dashboard-action learning-path-action"
+               href="learning_path.php?path_id=1">
+                <img src="assets/learningpath-icon.png"
+                     class="dashboard-action-icon"
+                     alt=""
+                     aria-hidden="true">
+                <span>LEARNING PATH</span>
+            </a>
 
-        <a class="dashboard-action minigame-action"
-           href="minigame.php">
-            <img src="assets/minigame-icon.png"
-                 class="dashboard-action-icon"
-                 alt=""
-                 aria-hidden="true">
-            <span>MINI-GAME</span>
-        </a>
+            <a class="dashboard-action matchmaking-action"
+               href="pvp.php">
+                <img src="assets/matchmaking-icon.png"
+                     class="dashboard-action-icon"
+                     alt=""
+                     aria-hidden="true">
+                <span>MATCHMAKING</span>
+            </a>
 
-        <a class="dashboard-action story-action"
-           href="story.php">
-            <img src="assets/story-icon.png"
-                 class="dashboard-action-icon"
-                 alt=""
-                 aria-hidden="true">
-            <span>STORY INTRO</span>
-        </a>
+            <a class="dashboard-action minigame-action"
+               href="minigame.php">
+                <img src="assets/minigame-icon.png"
+                     class="dashboard-action-icon"
+                     alt=""
+                     aria-hidden="true">
+                <span>MINI-GAME</span>
+            </a>
+
+            <a class="dashboard-action story-action"
+               href="story.php">
+                <img src="assets/story-icon.png"
+                     class="dashboard-action-icon"
+                     alt=""
+                     aria-hidden="true">
+                <span>STORY INTRO</span>
+            </a>
+
+        </div>
 
     </nav>
 

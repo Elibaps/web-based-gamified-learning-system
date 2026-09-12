@@ -1781,29 +1781,31 @@ body {
 /* =========================================================
    GLOBAL CODENEST RPG NAVBAR
    Three-piece pixel-art skin:
-   - left cap: 64x36 source -> 128x72 at 2x
-   - middle: 142x25 source -> 284x50 at 2x, repeated horizontally
-   - right cap: 43x44 source -> 86x88 at 2x
+   - left cap: 64x36 source -> 160x90 at 2.5x
+   - middle: 142x25 source -> 355x63 at 2.5x, repeated horizontally
+   - right cap: 43x44 source -> 108x110 at 2.5x
    Unequal source heights are intentional (chimney/smoke, foliage, etc.).
+   Controls (.theme-toggle-btn, .nav-avatar) stay at their current
+   size and are centered vertically inside the taller wooden rail.
    ========================================================= */
 .navbar {
   position: sticky;
   top: 0;
   z-index: 1000;
   width: 100%;
-  height: 88px;
+  height: 110px;
   box-sizing: border-box;
   display: flex;
   align-items: flex-start;
-  padding: 0 104px 0 142px;
+  padding: 0 126px 0 174px;
   color: #f5dfad;
   background-color: transparent;
   background-image: url("assets/top-nav-bar-middle.png");
   background-repeat: repeat-x;
-  /* The middle plank begins 36px from the top at 2x.
+  /* The middle plank begins 45px from the top at 2.5x.
      This aligns its join pixels exactly with both unequal-height end caps. */
-  background-position: left 36px;
-  background-size: 284px 50px;
+  background-position: left 45px;
+  background-size: 355px 63px;
   image-rendering: pixelated;
   isolation: isolate;
   overflow: visible;
@@ -1823,20 +1825,20 @@ body {
 
 .navbar::before {
   left: 0;
-  top: 16px;
-  width: 128px;
-  height: 72px;
+  top: 20px;
+  width: 160px;
+  height: 90px;
   background-image: url("assets/top-nav-bar-left.png");
-  background-size: 128px 72px;
+  background-size: 160px 90px;
 }
 
 .navbar::after {
   right: 0;
   top: 0;
-  width: 86px;
-  height: 88px;
+  width: 108px;
+  height: 110px;
   background-image: url("assets/top-nav-bar-right.png");
-  background-size: 86px 88px;
+  background-size: 108px 110px;
 }
 
 .nav-left,
@@ -1845,8 +1847,8 @@ body {
   z-index: 2;
   display: flex;
   align-items: center;
-  height: 50px;
-  margin-top: 36px;
+  height: 63px;
+  margin-top: 45px;
 }
 
 .nav-left {
@@ -1864,10 +1866,10 @@ body {
    accessible hotspot keeps the logo clickable without duplicate text. */
 .logo-text {
   position: absolute;
-  left: -142px;
-  top: -20px;
-  width: 128px;
-  height: 72px;
+  left: -174px;
+  top: -25px;
+  width: 160px;
+  height: 90px;
   overflow: hidden;
   transform: none;
   font-size: 0;
@@ -2068,10 +2070,10 @@ body {
 /* Scale the complete three-piece system together on narrower screens.
    We preserve each asset's aspect ratio instead of forcing equal heights. */
 @media (max-width: 900px) {
-  /* Keep the artwork at a crisp 2x integer scale; only tighten the HTML controls. */
+  /* Keep the enlarged 2.5x artwork crisp; only tighten the HTML controls. */
   .navbar {
-    padding-left: 136px;
-    padding-right: 98px;
+    padding-left: 168px;
+    padding-right: 116px;
   }
 
   .nav-left { gap: 8px; }
@@ -2082,7 +2084,7 @@ body {
     font-size: 9px;
   }
 
-  .logo-text { left: -136px; }
+  .logo-text { left: -168px; }
 
   .dropdown-menu {
     min-width: 440px;
@@ -3947,14 +3949,14 @@ textarea {
 
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 10px 14px;
 
   /* The big panel remains the dashboard hero. */
   width: min(95vw, 1650px);
   height: clamp(625px, 36vw, 675px);
 
   margin: 18px auto 38px;
-  padding: 42px 44px 40px;
+  padding: 42px 44px 40px 70px;
 
   box-sizing: border-box;
 
@@ -4121,6 +4123,20 @@ textarea {
   width: 100%;
   height: 82px;
 
+  image-rendering: pixelated;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Decorative frame renders ABOVE the dark track. Every exp-bar.png
+   pixel stays visible; the frame's fully-transparent opening shows
+   the solid dark track beneath instead of the parchment background. */
+.dashboard-page .xp-meter::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+
   background:
     transparent
     url("assets/exp-bar.png")
@@ -4128,18 +4144,21 @@ textarea {
     no-repeat;
 
   image-rendering: pixelated;
-  overflow: hidden;
 }
 
 .dashboard-page .xp-meter-track {
   position: absolute;
+  z-index: 1;
 
-  /* Keep the green progress strictly inside the frame opening. */
-  left: 10.8%;
-  right: 10.8%;
-  top: 47.5%;
-  height: 9.5%;
-  padding: -100px;
+  /* Cover the complete transparent opening of exp-bar.png
+     (source rows 56-72, columns 40-343) with a small overlap
+     UNDER the inner decorative edges so no paper-colored seam
+     is ever visible inside the XP track. */
+  left: 9.5%;
+  right: 9.5%;
+  top: 42.5%;
+  height: 15%;
+
   overflow: hidden;
   background: #20160f;
 }
@@ -4304,8 +4323,8 @@ textarea {
   left: 50%;
   bottom: 11px;
 
-  width: 74%;
-  height: 58px;
+  width: 55%;
+  height: 70px;
 
   transform: translateX(-50%);
 
@@ -4351,19 +4370,11 @@ textarea {
 
   /*
    * dashboard-buttonframe.png is 128x192 (2:3).
-   * Keep that proportion instead of stretching it horizontally.
+   * Width/height here are the FRAME box only; the button stack
+   * lives in .top-actions-inner so it never stretches with the frame.
    */
-  width: 360px;
-  height: 540px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 13px;
-
-  padding: 34px 24px;
-  box-sizing: border-box;
+  width: 300px;
+  height: 450px;
 
   background:
     transparent
@@ -4374,6 +4385,19 @@ textarea {
   image-rendering: pixelated;
 }
 
+.dashboard-page .top-actions-inner {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+
+  padding: 58px 44px 59px;
+  box-sizing: border-box;
+}
+
 .dashboard-page .dashboard-action {
   position: relative;
 
@@ -4381,8 +4405,10 @@ textarea {
    * The source button assets are ~2.7:1, so use a much chunkier
    * height instead of stretching them into long thin strips.
    */
-  width: 100%;
-  height: 104px;
+  width: 212px;
+  aspect-ratio: 8 / 3;
+
+  flex: 0 0 auto;
 
   display: grid;
   grid-template-columns: 58px minmax(0, 1fr);
@@ -4483,18 +4509,9 @@ textarea {
       minmax(300px, 0.76fr);
 
     width: min(97vw, 1280px);
-    gap: 8px;
-    padding-left: 36px;
+    gap: 8px 14px;
+    padding-left: 62px;
     padding-right: 36px;
-  }
-
-  .dashboard-page .top-actions {
-    width: 330px;
-    height: 495px;
-  }
-
-  .dashboard-page .dashboard-action {
-    height: 94px;
   }
 }
 
@@ -4512,9 +4529,14 @@ textarea {
 
   .dashboard-page .top-actions {
     grid-column: 1 / -1;
+    justify-self: center;
 
     width: min(100%, 760px);
-    height: 275px;
+    height: 300px;
+  }
+
+  .dashboard-page .top-actions-inner {
+    height: 100%;
 
     flex-direction: row;
     flex-wrap: wrap;
@@ -4553,13 +4575,15 @@ textarea {
 
   .dashboard-page .top-actions {
     width: min(100%, 360px);
-    height: 540px;
+    height: 558px;
+  }
 
+  .dashboard-page .top-actions-inner {
     flex-direction: column;
     flex-wrap: nowrap;
 
-    gap: 13px;
-    padding: 34px 24px;
+    gap: 12px;
+    padding: 44px 24px 44px;
   }
 
   .dashboard-page .dashboard-action {
@@ -4737,6 +4761,67 @@ textarea {
   .dashboard-page .daily-trivia-text-frame p {
     font-size: 9px;
     line-height: 1.55;
+  }
+}
+
+/* =========================================================
+   ACTION FRAME + BUTTONS — FINAL AUTHORITATIVE DESKTOP RULE
+   ---------------------------------------------------------
+   Forces the four dashboard action buttons inside the wooden
+   frame with clear, visible border clearance on ALL four sides.
+
+   - .top-actions        = wooden frame only
+   - .top-actions-inner  = button positioning / padding
+
+   Guarded by min-width: 1121px so it never disturbs the
+   mobile/tablet layouts at the bottom of this file. It is the
+   LAST matching rule for desktop, so it wins the cascade over
+   every earlier .top-actions rule above.
+   ========================================================= */
+@media (min-width: 1121px) {
+  .dashboard-page .top-actions {
+    position: relative;
+    width: 300px;
+    height: 450px;
+    justify-self: center;
+    align-self: center;
+
+    margin: 0;
+    padding: 0;
+    gap: 0;
+
+    background:
+      transparent
+      url("assets/dashboard-buttonframe.png")
+      center / 100% 100%
+      no-repeat;
+
+    image-rendering: pixelated;
+  }
+
+  .dashboard-page .top-actions-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    gap: 5px;
+
+    padding: 58px 44px 59px;
+    box-sizing: border-box;
+  }
+
+  .dashboard-page .dashboard-action {
+    position: relative;
+    width: 212px;
+    aspect-ratio: 8 / 3;
+
+    flex: 0 0 auto;
+    margin: 0;
+    box-sizing: border-box;
   }
 }
 
