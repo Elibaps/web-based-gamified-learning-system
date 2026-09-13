@@ -4388,7 +4388,7 @@ textarea {
   left: 50%;
   bottom: 11px;
 
-  width: 55%;
+  width: 45%;
   height: 70px;
 
   transform: translateX(-50%);
@@ -4448,7 +4448,7 @@ textarea {
 
   margin: 0 auto;
   box-sizing: border-box;
-  aspect-ratio: 360 / 272;
+  aspect-ratio: 360 / 216;
 
   background:
     transparent
@@ -4459,12 +4459,20 @@ textarea {
   image-rendering: pixelated;
 }
 
+/* Stay with the original frame proportions until the board is wide
+   enough to fit five roomy rows on the shorter frame. */
+@media (max-width: 960px) {
+  .leaderboard-page .leaderboard-board {
+    aspect-ratio: 360 / 272;
+  }
+}
+
 .leaderboard-page .leaderboard-list {
   position: absolute;
-  left: 7.7%;
-  right: 7.7%;
-  top: 24%;
-  bottom: 17%;
+  left: 13%;
+  right: 12.4%;
+  top: 27%;
+  bottom: 14%;
 
   height: auto;
 
@@ -4611,10 +4619,10 @@ textarea {
 
 .leaderboard-page .lb-empty {
   position: absolute;
-  left: 7.7%;
-  right: 7.7%;
-  top: 24%;
-  bottom: 17%;
+  left: 13%;
+  right: 12.4%;
+  top: 27%;
+  bottom: 14%;
 
   display: flex;
   align-items: center;
@@ -5042,6 +5050,56 @@ textarea {
   }
 }
 
+
+/* =========================================================
+   DASHBOARD HERO — DESKTOP-ONLY TWEAKS
+   Player Status nudged right; Top Players scaled as a unit.
+   ========================================================= */
+
+@media (min-width: 1121px) {
+  .dashboard-page .player-status-card {
+    justify-self: center;
+    margin-left: 24px;
+  }
+}
+
+@media (min-width: 1121px) and (max-width: 1399px) {
+  .dashboard-page .mini-leaderboard {
+    transform: scale(1.02);
+    transform-origin: top left;
+  }
+}
+
+@media (min-width: 1400px) and (max-width: 1499px) {
+  .dashboard-page .mini-leaderboard {
+    transform: scale(1.04);
+    transform-origin: top left;
+  }
+}
+
+@media (min-width: 1500px) and (max-width: 1599px) {
+  .dashboard-page .mini-leaderboard {
+    transform: scale(1.07);
+    transform-origin: top left;
+  }
+}
+
+@media (min-width: 1600px) and (max-width: 1699px) {
+  .dashboard-page .mini-leaderboard {
+    transform: scale(1.09);
+    transform-origin: top left;
+  }
+}
+
+@media (min-width: 1700px) {
+  .dashboard-page .mini-leaderboard {
+    justify-self: center;
+    margin-left: 6px;
+
+    transform: scale(1.10);
+    transform-origin: top left;
+  }
+}
 
 /* =========================================================
    DAILY TECH TRIVIA — ASSET COMPOSITION
