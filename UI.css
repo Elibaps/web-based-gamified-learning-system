@@ -5134,6 +5134,7 @@ textarea {
   position: absolute;
 
   left: 5.8%;
+  margin-left: 25px;
   top: 50%;
 
   width: 12.5%;
@@ -5186,6 +5187,7 @@ textarea {
 /* The parchment PNG itself is decorative; the fact stays selectable HTML. */
 .dashboard-page .daily-trivia-text-frame {
   position: relative;
+  top: -12px;
 
   width: 100%;
   min-height: 180px;
