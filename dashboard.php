@@ -260,52 +260,58 @@ include 'includes/head.php';
     <?php
     $courseCards = [
         [
-            'name' => 'HTML',
-            'slug' => 'html',
+            'name' => 'Java Basics',
+            'slug' => 'java-basics',
             'tag' => 'beginner',
             'difficulty' => 'Beginner',
-            'logo' => 'html-logo.png',
-            'desc' => 'Create the structure of websites.',
+            'logo' => 'java-logo.png',
+            'desc' => 'Setup and your first Java program.',
+            'route' => 'Java',
         ],
         [
-            'name' => 'CSS',
-            'slug' => 'css',
+            'name' => 'Variables & Data Types',
+            'slug' => 'variables-data-types',
             'tag' => 'beginner',
             'difficulty' => 'Beginner',
-            'logo' => 'css-logo.png',
-            'desc' => 'Design and layout beautifully.',
+            'logo' => 'java-logo.png',
+            'desc' => 'Store and work with different data.',
+            'route' => 'Java',
         ],
         [
-            'name' => 'JavaScript',
-            'slug' => 'javascript',
+            'name' => 'Control Flow',
+            'slug' => 'control-flow',
             'tag' => 'beginner',
             'difficulty' => 'Beginner',
-            'logo' => 'javascript-logo.png',
-            'desc' => 'Add logic and interactivity.',
+            'logo' => 'java-logo.png',
+            'desc' => 'Make decisions and repeat code.',
+            'route' => 'Java',
         ],
         [
-            'name' => 'PHP',
-            'slug' => 'php',
-            'tag' => 'intermediate',
-            'difficulty' => 'Intermediate',
-            'logo' => 'php-logo.png',
-            'desc' => 'Backend web development.',
-        ],
-        [
-            'name' => 'Java',
-            'slug' => 'java',
+            'name' => 'OOP in Java',
+            'slug' => 'java-oop',
             'tag' => 'intermediate',
             'difficulty' => 'Intermediate',
             'logo' => 'java-logo.png',
-            'desc' => 'Object-oriented programming.',
+            'desc' => 'Classes, objects, and inheritance.',
+            'route' => 'Java',
         ],
         [
-            'name' => 'C++',
-            'slug' => 'c++',
+            'name' => 'Arrays & Collections',
+            'slug' => 'arrays-collections',
+            'tag' => 'intermediate',
+            'difficulty' => 'Intermediate',
+            'logo' => 'java-logo.png',
+            'desc' => 'Group and manage multiple values.',
+            'route' => 'Java',
+        ],
+        [
+            'name' => 'Java Projects',
+            'slug' => 'java-projects',
             'tag' => 'advanced',
             'difficulty' => 'Advanced',
-            'logo' => 'cpp-logo.png',
-            'desc' => 'High-performance programming.',
+            'logo' => 'java-logo.png',
+            'desc' => 'Build complete Java applications.',
+            'route' => 'Java',
         ],
     ];
     ?>
@@ -313,7 +319,7 @@ include 'includes/head.php';
     <div class="course-grid" id="courseGrid">
       <?php foreach ($courseCards as $course): ?>
         <?php
-          $courseProgress = $progress[$course['name']] ?? ['percent' => 0, 'completed' => 0, 'total' => 0];
+          $courseProgress = $progress[$course['route']] ?? ['percent' => 0, 'completed' => 0, 'total' => 0];
           $coursePct = (int)$courseProgress['percent'];
           $courseDone = (int)$courseProgress['completed'];
           $courseTotal = (int)$courseProgress['total'];
@@ -324,6 +330,7 @@ include 'includes/head.php';
           $safeTag = htmlspecialchars($course['tag'], ENT_QUOTES, 'UTF-8');
           $safeSlug = htmlspecialchars($course['slug'], ENT_QUOTES, 'UTF-8');
           $safeLogo = htmlspecialchars($course['logo'], ENT_QUOTES, 'UTF-8');
+          $safeRoute = htmlspecialchars($course['route'], ENT_QUOTES, 'UTF-8');
         ?>
 
         <article
@@ -332,8 +339,8 @@ include 'includes/head.php';
           data-name="<?php echo $safeSlug; ?>"
           tabindex="0"
           role="button"
-          onclick="openLesson('<?php echo $safeName; ?>')"
-          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson('<?php echo $safeName; ?>');}"
+          onclick="openLesson('<?php echo $safeRoute; ?>')"
+          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLesson('<?php echo $safeRoute; ?>');}"
         >
           <div class="course-card-top">
             <div class="course-logo-box">
@@ -448,16 +455,26 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 /* ── Search & Filter ─────────────────────────────────────── */
+let activeCourseTag = "all";
+
 function filterCourses() {
     const q = document.getElementById("searchBar").value.toLowerCase();
     document.querySelectorAll(".course-card").forEach(card => {
-        card.style.display = card.dataset.name.includes(q) ? "" : "none";
+        const haystack = (
+            card.dataset.name + " " +
+            (card.querySelector(".course-title")?.textContent ?? "") + " " +
+            (card.querySelector(".course-desc")?.textContent ?? "")
+        ).toLowerCase();
+        const matchesQ = q === "" || haystack.includes(q);
+        const matchesTag = activeCourseTag === "all" || card.dataset.tag === activeCourseTag;
+        card.style.display = matchesQ && matchesTag ? "" : "none";
     });
 }
 
 function filterByTag(el, tag) {
     document.querySelectorAll(".filter").forEach(f => f.classList.remove("active-filter"));
     el.classList.add("active-filter");
+    activeCourseTag = tag;
     document.querySelectorAll(".course-card").forEach(card => {
         card.style.display = (tag === "all" || card.dataset.tag === tag) ? "" : "none";
     });
