@@ -62,6 +62,19 @@ include 'includes/head.php';
 
 <?php include 'includes/navbar.php'; ?>
 
+<!-- Migration (temporary): leaderboardlist.php loads UI.css (via head.php)
+     plus the shared modular foundation, matching the Dashboard's order.
+     Order: base (global reset/@font-face/pixel cursors), navbar (shared
+     navbar), ambient (shared living background, before leaderboard.css),
+     then leaderboard (page rules extracted from UI.css, which still retains
+     the original section for now, so leaderboard.css must load AFTER UI.css
+     to win the cascade). Do NOT load css/dashboard.css here: it is
+     Dashboard-owned and would add unrelated rules to this page. -->
+<link rel="stylesheet" href="css/base.css?v=<?= filemtime('css/base.css') ?>">
+<link rel="stylesheet" href="css/navbar.css?v=<?= filemtime('css/navbar.css') ?>">
+<link rel="stylesheet" href="css/ambient.css?v=<?= filemtime('css/ambient.css') ?>">
+<link rel="stylesheet" href="css/leaderboard.css?v=<?= filemtime('css/leaderboard.css') ?>">
+
 <!-- REUSED DASHBOARD LIVING BACKGROUND (light/dark aware) -->
 <div class="dashboard-parallax" aria-hidden="true">
     <div class="dashboard-parallax-layer dashboard-parallax-near"></div>

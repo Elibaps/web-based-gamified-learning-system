@@ -1,0 +1,270 @@
+/* ============================================================
+** ambient.css  -  Shared CodeNest living-background system
+** Used by BOTH dashboard.php and leaderboardlist.php (both pages
+** carry the .dashboard-page body class and the .dashboard-parallax
+** markup). Rules below were MOVED verbatim from css/dashboard.css,
+** which previously owned them exclusively, so there is a single
+** source of truth:
+**   - .dashboard-page background/theme setup + --dash-bg-near
+**   - .dashboard-parallax / -layer / -near / -vignette (near
+**     variants only; far/mid layers were intentionally removed)
+**   - .dashboard-particles / .dashboard-fireflies / .dashboard-motes
+**     / .dashboard-leaves and the firefly/mote/leaf elements
+**   - keyframes dashboard-firefly-float, dashboard-firefly-glow,
+**     dashboard-mote-float, dashboard-leaf-fall
+** Asset urls remain ../assets/... (already correct for css/).
+** dashboard.php loads this file BEFORE css/dashboard.css;
+** leaderboardlist.php loads it BEFORE css/leaderboard.css.
+** ============================================================ */
+/* =========================================================
+   DASHBOARD LIVING BACKGROUND — LIGHT / DARK STATIC LAYERS
+   ========================================================= */
+
+.dashboard-page {
+  --dash-bg-near: url("../assets/dashboard-bg-near-dark.png");
+
+  position: relative;
+  isolation: isolate;
+  background: #07101c;
+}
+
+[data-theme="light"] .dashboard-page {
+  --dash-bg-near: url("../assets/dashboard-bg-near-light.png");
+
+  background: #bfe0f2;
+}
+
+.dashboard-page .dashboard-parallax {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: #07101c;
+}
+
+[data-theme="light"] .dashboard-page .dashboard-parallax {
+  background: #bfe0f2;
+}
+
+.dashboard-page .dashboard-parallax-layer {
+  position: absolute;
+  inset: 0;
+
+  background-repeat: no-repeat;
+  background-position: center 50%;
+  background-size: cover;
+
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* Near foreground layer, strongest toward the bottom/edges. */
+.dashboard-page .dashboard-parallax-near {
+  z-index: 3;
+  background-image: var(--dash-bg-near);
+  background-size: cover;
+  background-position: 58% center;
+  transform: scale(1.01);
+  transform-origin: center center;
+}
+
+.dashboard-page .dashboard-parallax-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(2,7,14,.05) 0%,
+      rgba(2,7,14,.12) 52%,
+      rgba(2,7,14,.27) 100%
+    );
+}
+
+[data-theme="light"] .dashboard-page .dashboard-parallax-vignette {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255,255,255,.02) 0%,
+      rgba(234,246,251,.06) 50%,
+      rgba(42,76,86,.11) 100%
+    );
+}
+
+/* =========================================================
+   DASHBOARD AMBIENT LIFE
+   Dark mode  = fireflies
+   Light mode = pollen / dust motes
+   Both modes = occasional drifting leaves
+   ========================================================= */
+
+.dashboard-page .dashboard-particles,
+.dashboard-page .dashboard-leaves {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.dashboard-page .dashboard-firefly,
+.dashboard-page .dashboard-mote,
+.dashboard-page .dashboard-leaf {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+/* ---------------- DARK MODE: FIREFLIES ---------------- */
+
+.dashboard-page .dashboard-firefly {
+  left: var(--x);
+  top: var(--y);
+
+  width: var(--size);
+  height: var(--size);
+
+  border-radius: 50%;
+
+  background: #f4f27a;
+
+  box-shadow:
+    0 0 6px #f4f27a,
+    0 0 12px rgba(223, 242, 91, 0.88),
+    0 0 22px rgba(158, 220, 75, 0.52);
+
+  opacity: 0;
+
+  animation:
+    dashboard-firefly-float var(--duration) ease-in-out var(--delay) infinite,
+    dashboard-firefly-glow 2.4s steps(4, end) var(--delay) infinite;
+}
+
+@keyframes dashboard-firefly-float {
+  0% {
+    transform: translate3d(0, 24px, 0);
+  }
+  35% {
+    transform: translate3d(var(--drift), -16px, 0);
+  }
+  70% {
+    transform: translate3d(calc(var(--drift) * -0.45), -40px, 0);
+  }
+  100% {
+    transform: translate3d(0, 24px, 0);
+  }
+}
+
+@keyframes dashboard-firefly-glow {
+  0%, 100% { opacity: 0.18; }
+  30%      { opacity: 0.95; }
+  55%      { opacity: 0.45; }
+  78%      { opacity: 0.85; }
+}
+
+/* Hide fireflies during daytime. */
+[data-theme="light"] .dashboard-page .dashboard-fireflies {
+  opacity: 0;
+}
+
+/* ---------------- LIGHT MODE: POLLEN / MOTES ---------------- */
+
+.dashboard-page .dashboard-mote {
+  left: var(--x);
+  top: var(--y);
+
+  width: var(--size);
+  height: var(--size);
+
+  border-radius: 50%;
+  background: rgba(255, 245, 190, 0.92);
+
+  box-shadow: 0 0 5px rgba(255, 246, 186, 0.55);
+
+  opacity: 0;
+
+  animation:
+    dashboard-mote-float var(--duration) linear var(--delay) infinite;
+}
+
+@keyframes dashboard-mote-float {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+  }
+  15% {
+    opacity: 0.65;
+  }
+  65% {
+    opacity: 0.42;
+    transform: translate3d(var(--drift), -42px, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(var(--drift) * -0.25), -75px, 0);
+  }
+}
+
+/* Motes belong to daylight only. */
+.dashboard-page .dashboard-motes {
+  opacity: 0;
+}
+
+[data-theme="light"] .dashboard-page .dashboard-motes {
+  opacity: 1;
+}
+
+/* ---------------- BOTH MODES: LEAVES ---------------- */
+
+.dashboard-page .dashboard-leaf {
+  left: var(--x);
+  top: -24px;
+
+  width: 10px;
+  height: 6px;
+
+  background: #6a9734;
+  border: 1px solid #35551f;
+
+  border-radius: 70% 10% 70% 10%;
+
+  opacity: 0.82;
+
+  animation:
+    dashboard-leaf-fall var(--duration) linear var(--delay) infinite;
+}
+
+@keyframes dashboard-leaf-fall {
+  0% {
+    transform: translate3d(0, -30px, 0) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.82;
+  }
+  45% {
+    transform: translate3d(var(--sway), 55vh, 0) rotate(180deg);
+  }
+  100% {
+    transform: translate3d(calc(var(--sway) * -0.55), 115vh, 0) rotate(420deg);
+    opacity: 0;
+  }
+}
+
+[data-theme="light"] .dashboard-page .dashboard-leaf {
+  background: #82b240;
+  border-color: #466a25;
+  opacity: 0.74;
+}
+
+/*
+ * Keep ambient effects visible BETWEEN panels without washing
+ * out the actual dashboard UI.
+ */
+.dashboard-page .dashboard-parallax-vignette {
+  z-index: 6;
+}
