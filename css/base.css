@@ -1,0 +1,102 @@
+/* base.css - global foundation extracted verbatim from UI.css (Phase A) */
+/* global reset / box-model, :root vars, light-theme vars, html/body, @font-face, .sr-only, pixel cursors */
+/* url() paths normalized for the css/ directory (../fonts, ../assets). */
+/* ===== GLOBAL RESET & BOX MODEL ===== */
+:root {
+  --bg-color: #000000;
+  --card-bg: #020617;
+  --primary-color: #4ade80;
+  --text-color: #e2e8f0;
+  --muted-color: #94a3b8;
+  --shadow-color: #0f5127;
+  --danger-color: #ff0000;
+  --warning-color: #ffb000;
+  --text-shadow-glow: 0 0 3px rgba(74, 222, 128, 0.4);
+  --border-radius: 6px;
+}
+
+[data-theme='light'] {
+  --bg-color: #f0fdf4;
+  --card-bg: #dcfce7;
+  --primary-color: #14532d;
+  --text-color: #1a2e1a;
+  --muted-color: #4a6a4a;
+  --shadow-color: #15803d;
+  --danger-color: #b91c1c;
+  --warning-color: #b45309;
+  --text-shadow-glow: none;
+}
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  width: 100%;
+
+  background: var(--bg-color);
+  color: var(--text-color);
+
+  overflow-x: hidden;
+
+  font-family: 'Minecraft', monospace;
+  image-rendering: pixelated;
+  text-shadow: var(--text-shadow-glow);
+}
+
+body {
+  min-height: 100vh;
+}
+
+@font-face {
+  font-family: 'Minecraft';
+  src: url('../fonts/Minecraftia-Regular.ttf'); /* fixed path */
+}
+
+/* =========================================================
+   ACCESSIBILITY UTILITY
+   Keeps semantic headings available to screen readers
+   without drawing duplicate text over pixel-art title assets.
+   ========================================================= */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+/* =========================================================
+   CODENEST GLOBAL PIXEL CURSORS
+   ========================================================= */
+html,
+body,
+body * {
+  cursor: url("../assets/cursor.png") 0 0, auto !important;
+}
+
+a,
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="checkbox"],
+input[type="radio"],
+select,
+label[for],
+.remember-me {
+  cursor: url("../assets/cursor-click.png") 0 0, pointer !important;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="search"],
+textarea {
+  cursor: text !important;
+}

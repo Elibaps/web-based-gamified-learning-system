@@ -75,6 +75,14 @@ include 'includes/head.php';
 ?>
 <body class="dashboard-page">
 
+<!-- Migration (temporary): extracted modular sheets load AFTER UI.css so we can
+     verify parity. Order: base, navbar, dashboard, courses. UI.css remains as
+     fallback until all modules are extracted and the isolation test passes. -->
+<link rel="stylesheet" href="css/base.css?v=<?= filemtime('css/base.css') ?>">
+<link rel="stylesheet" href="css/navbar.css?v=<?= filemtime('css/navbar.css') ?>">
+<link rel="stylesheet" href="css/dashboard.css?v=<?= filemtime('css/dashboard.css') ?>">
+<link rel="stylesheet" href="css/courses.css?v=<?= filemtime('css/courses.css') ?>">
+
 <?php include 'includes/navbar.php'; ?>
 
 <!-- LIVING DASHBOARD BACKGROUND -->

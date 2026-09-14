@@ -1,0 +1,415 @@
+/* navbar.css - navbar implementation extracted verbatim from UI.css (Phase B) */
+/* frame/bg, logo hotspot, nav items, dropdown menus, theme toggle, avatar, house account menu, hover/focus, responsive. */
+/* url() paths normalized for the css/ directory (../assets). */
+/* =========================================================
+   GLOBAL CODENEST RPG NAVBAR
+   Three-piece pixel-art skin:
+   - left cap: 64x36 source -> 160x90 at 2.5x
+   - middle: 142x25 source -> 355x63 at 2.5x, repeated horizontally
+   - right cap: 43x44 source -> 108x110 at 2.5x
+   Unequal source heights are intentional (chimney/smoke, foliage, etc.).
+   Controls (.theme-toggle-btn, .nav-avatar) stay at their current
+   size and are centered vertically inside the taller wooden rail.
+   ========================================================= */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 110px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  padding: 0 103px 0 174px;
+  color: #f5dfad;
+  background-color: transparent;
+  background-image: url("../assets/top-nav-bar-middle.png");
+  background-repeat: repeat-x;
+  /* The middle plank begins 45px from the top at 2.5x.
+     This aligns its join pixels exactly with both unequal-height end caps. */
+  background-position: left 45px;
+  background-size: 355px 63px;
+  image-rendering: pixelated;
+  isolation: isolate;
+  overflow: visible;
+}
+
+/* Fixed art caps sit above the repeating middle plank. */
+.navbar::before,
+.navbar::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
+}
+
+.navbar::before {
+  left: 0;
+  top: 20px;
+  width: 160px;
+  height: 90px;
+  background-image: url("../assets/top-nav-bar-left.png");
+  background-size: 160px 90px;
+}
+
+.navbar::after {
+  right: 0;
+  top: 0;
+  width: 108px;
+  height: 110px;
+  background-image: url("../assets/top-nav-bar-right.png");
+  background-size: 108px 110px;
+}
+
+.nav-left,
+.nav-right {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  height: 63px;
+  margin-top: 45px;
+}
+
+.nav-left {
+  flex: 1;
+  min-width: 0;
+  gap: 22px;
+}
+
+.nav-right {
+  margin-left: auto;
+  gap: 12px;
+}
+
+/* The left PNG already contains the CodeNest logo. This invisible,
+   accessible hotspot keeps the logo clickable without duplicate text. */
+.logo-text {
+  position: absolute;
+  left: -174px;
+  top: -25px;
+  width: 160px;
+  height: 90px;
+  overflow: hidden;
+  transform: none;
+  font-size: 0;
+  color: transparent !important;
+  text-decoration: none;
+}
+
+.nav-item,
+.nav-left > a:not(.logo-text) {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 6px 8px;
+  box-sizing: border-box;
+  color: #f5dfad !important;
+  text-decoration: none !important;
+  font-family: 'Minecraft', monospace;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  text-shadow: 2px 2px 0 #2d170c;
+}
+
+.nav-item::after,
+.nav-left > a:not(.logo-text)::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 2px;
+  height: 2px;
+  background: #8fd13f;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.nav-item:hover,
+.nav-left > a:not(.logo-text):hover {
+  color: #d9ff70 !important;
+  transform: translateY(-1px);
+}
+
+.nav-item:hover::after,
+.nav-left > a:not(.logo-text):hover::after {
+  transform: scaleX(1);
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: -12px;
+  display: none;
+  grid-template-columns: repeat(3, minmax(150px, 1fr));
+  gap: 16px;
+  min-width: 520px;
+  padding: 18px;
+  box-sizing: border-box;
+  background: #302014;
+  border: 4px solid #6c431f;
+  box-shadow: 6px 6px 0 rgba(27, 16, 8, 0.75);
+  color: #f5dfad;
+  image-rendering: pixelated;
+}
+
+.dropdown-menu::before,
+.profile-dropdown::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -12px;
+  height: 12px;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: grid;
+  animation: dropdownFade 0.15s ease;
+}
+
+.menu-column h4 {
+  margin: 0 0 10px;
+  color: #d9ff70;
+  font-size: 12px;
+}
+
+.menu-column p,
+.menu-column a,
+.menu-column span {
+  display: block;
+  margin: 7px 0;
+  color: #f5dfad;
+  text-decoration: none;
+  font-size: 10px;
+  opacity: 0.85;
+}
+
+.menu-column a:hover,
+.menu-column p:hover {
+  color: #d9ff70;
+  opacity: 1;
+}
+
+.profile-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.theme-toggle-btn {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 2px solid #8a5a2b;
+  background: #3a2415;
+  color: #f7ce54;
+  box-shadow: 2px 2px 0 #1f120a;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.theme-toggle-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.12);
+}
+
+.nav-avatar {
+  width: 42px;
+  height: 42px;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 3px solid #8a5a2b;
+  background: #2c1b10;
+  box-shadow: 2px 2px 0 #1f120a;
+  color: #f5dfad;
+  font-family: 'Minecraft', monospace;
+  font-size: 14px;
+  line-height: 1;
+  image-rendering: pixelated;
+  user-select: none;
+  background-image: url("../assets/player.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.nav-avatar:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  min-width: 175px;
+  display: none;
+  flex-direction: column;
+  padding: 8px;
+  background: #302014;
+  border: 4px solid #6c431f;
+  box-shadow: 6px 6px 0 rgba(27, 16, 8, 0.75);
+}
+
+.profile-dropdown a {
+  padding: 10px 12px;
+  color: #f5dfad;
+  text-decoration: none;
+  font-size: 10px;
+}
+
+.profile-dropdown a:hover,
+.profile-dropdown a:focus-visible {
+  color: #ffe9a3;
+  transform: translateX(2px);
+  cursor: pointer;
+  transition: color 0.12s ease, transform 0.12s ease;
+}
+
+.profile-menu:hover .profile-dropdown {
+  display: flex;
+  animation: dropdownFade 0.15s ease;
+}
+
+/* House artwork (top-nav-bar-right.png) is now the account menu trigger.
+   The PNG itself is untouched; this invisible hotspot plus the dropdown
+   overlay sit on top of it. */
+.house-menu {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 108px;
+  height: 110px;
+  z-index: 5;
+}
+
+.house-trigger {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+}
+
+.house-menu:hover .profile-dropdown,
+.house-menu.is-open .profile-dropdown {
+  display: flex;
+  animation: dropdownFade 0.15s ease;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Scale the complete three-piece system together on narrower screens.
+   We preserve each asset's aspect ratio instead of forcing equal heights. */
+@media (max-width: 900px) {
+  /* Keep the enlarged 2.5x artwork crisp; only tighten the HTML controls. */
+  .navbar {
+    padding-left: 168px;
+    padding-right: 116px;
+  }
+
+  .nav-left { gap: 8px; }
+
+  .nav-item,
+  .nav-left > a:not(.logo-text) {
+    padding-inline: 5px;
+    font-size: 9px;
+  }
+
+  .logo-text { left: -168px; }
+
+  .dropdown-menu {
+    min-width: 440px;
+    grid-template-columns: repeat(3, minmax(125px, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  /* Drop once to the original 1x pixels rather than using blurry fractional scaling. */
+  .navbar {
+    height: 44px;
+    padding-left: 72px;
+    padding-right: 51px;
+    background-size: 142px 25px;
+    background-position: left 18px;
+  }
+
+  .navbar::before {
+    top: 8px;
+    width: 64px;
+    height: 36px;
+    background-size: 64px 36px;
+  }
+
+  .navbar::after {
+    top: 0;
+    width: 43px;
+    height: 44px;
+    background-size: 43px 44px;
+  }
+
+  .nav-left,
+  .nav-right {
+    height: 25px;
+    margin-top: 18px;
+  }
+
+  .logo-text {
+    left: -72px;
+    top: -10px;
+    width: 64px;
+    height: 36px;
+  }
+
+  .nav-left { gap: 2px; }
+
+  .nav-item,
+  .nav-left > a:not(.logo-text) {
+    min-height: 26px;
+    font-size: 7px;
+    padding-inline: 2px;
+  }
+
+  .nav-right { gap: 3px; }
+
+  .theme-toggle-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .nav-avatar {
+    width: 26px;
+    height: 26px;
+    font-size: 9px;
+  }
+
+  .house-menu {
+    width: 43px;
+    height: 44px;
+  }
+}
