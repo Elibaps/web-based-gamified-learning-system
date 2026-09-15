@@ -13,6 +13,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
+<!-- Migration (temporary): extracted modular sheets load AFTER UI.css so we
+     can verify parity. Order: base (global reset/@font-face), then auth
+     (Auth-owned rules extracted from UI.css, which still retains the
+     original section for now). Auth pages intentionally do NOT load
+     navbar.css or ambient.css (no navbar, no living background). -->
+<link rel="stylesheet" href="css/base.css?v=<?= filemtime('css/base.css') ?>">
+<link rel="stylesheet" href="css/auth.css?v=<?= filemtime('css/auth.css') ?>">
+
 <body class="auth-page forgot-password-page">
 
 <div class="auth-container">
